@@ -32,6 +32,17 @@ $this->card_types = array(
 
 */
 
-
+ $this->resources = array(
+    "carrots"      => clienttranslate("carrots"    ),
+    "peas"         => clienttranslate("peas"       ),
+    "peppers"      => clienttranslate("peppers"    ),
+    "tomatos"      => clienttranslate("tomatos"    ),
+    "potatos"      => clienttranslate("potatos"    ),
+    "cabbage"      => clienttranslate("cabbage"    ),
+    "bunny"        => clienttranslate("bunny"      ),
+	"groundhog"    => clienttranslate("groundhog"  ),
+	"score_window_title" => clienttranslate('FINAL SCORE'),
+	"win_condition" => clienttranslate('The player with the most points wins')
+);
 
 
