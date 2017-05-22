@@ -34,15 +34,23 @@ $this->card_types = array(
 
  $this->resources = array(
     "carrots"      => clienttranslate("carrots"    ),
+	"cabbage"      => clienttranslate("cabbage"    ),
     "peas"         => clienttranslate("peas"       ),
     "peppers"      => clienttranslate("peppers"    ),
-    "tomatos"      => clienttranslate("tomatos"    ),
-    "potatos"      => clienttranslate("potatos"    ),
-    "cabbage"      => clienttranslate("cabbage"    ),
+    "potato"      => clienttranslate("potato"    ),
+    "tomato"      => clienttranslate("tomato"    ),
     "bunny"        => clienttranslate("bunny"      ),
 	"groundhog"    => clienttranslate("groundhog"  ),
 	"score_window_title" => clienttranslate('FINAL SCORE'),
 	"win_condition" => clienttranslate('The player with the most points wins')
 );
 
-
+$this->card_types = array(
+	1  => array( 'name' => $this->resources["carrots"], 'type_id' =>  1),
+	2  => array( 'name' => $this->resources["cabbage"], 'type_id' =>  2),
+	3  => array( 'name' => $this->resources["peas"   ], 'type_id' =>  3),
+	4  => array( 'name' => $this->resources["peppers"], 'type_id' =>  4),
+	5  => array( 'name' => $this->resources["potato" ], 'type_id' =>  5),
+	6  => array( 'name' => $this->resources["tomato" ], 'type_id' =>  6)
+);
+                                                      

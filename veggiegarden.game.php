@@ -33,13 +33,22 @@ class veggiegarden extends Table
         //  the corresponding ID in gameoptions.inc.php.
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();self::initGameStateLabels( array( 
-            //    "my_first_global_variable" => 10,
-            //    "my_second_global_variable" => 11,
+                "iterations" => 10,
+                "card_picked" => 11,
+				"card_clicked" => 12,
+				"token_clicked" => 13,
+				"groundhog_pos" => 14
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
             //      ...
         ) );
+		
+		$this->cards = self::getNew( "module.common.deck" );
+		$this->cards->init( "cards" );
+		
+		$this->tokens = self::getNew( "module.common.deck" );
+		$this->tokens->init( "tokens" );
         
 	}
 	
@@ -88,7 +97,57 @@ class veggiegarden extends Table
         //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
         // TODO: setup the initial game situation here
+		
+		self::setGameStateInitialValue( 'iterations', 0 ); // number of rounds
+		
+		$result=mt_rand (1,6);  //remove 1 card type from the game
+		$cards = array();
+		for ( $i=1 ; $i <=6 ; $i++ )
+        {
+			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 14 );
+			if ( $i != $result ) 
+				{
+					array_push($cards, $card);   
+				}
+        }
+		$this->cards->createCards( $cards, 'deck' );
+        
+		$cards = array();
+		
+		if  ( $result != 3 )
+			{
+			self::setGameStateInitialValue( 'groundhog_pos',  mt_rand (1,4)  )
+			}
+		else
+			{
+			self::setGameStateInitialValue( 'groundhog_pos', 0 )	
+			}
+	
+		
+		for ( $i=1 ; $i <=3 ; $i++ )
+        {
+			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 4 );
+			array_push($cards, $card); 
+		}
+		
+		$this->tokens->createCards( $cards, 'fence' );
+		
+		if  ( $result != 1 )
+		{
+			$sql = "UPDATE tokens set card_type=7 where card_id=" . mt_rand (1,12) ;
+			self::DbQuery( $sql );
+		}
+			
+		
+		
+		
+		
+		
+		//shuffle 
+        $this->cards->shuffle( 'deck' );
        
+	   
+	   
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
