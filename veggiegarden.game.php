@@ -100,6 +100,7 @@ class veggiegarden extends Table
         // TODO: setup the initial game situation here
 		
 		self::setGameStateInitialValue( 'iterations', 0 ); // number of rounds
+		self::setGameStateInitialValue( 'max_iterations', sizeof ($players) * 6 ); // Max number of rounds
 		
 		$removed=mt_rand (1,6);  //remove 1 card type from the game
 		$cards = array();
@@ -124,9 +125,9 @@ class veggiegarden extends Table
 		
 		$this->tokens->createCards( $cards, 'deck' );
 		
-		if  ( $removed != 1 )
+		if  ( $removed != 1 )   // SHOULD WE PLACE THE BUNNY ?
 		{
-			$sql = "UPDATE tokens set card_type=4 where card_id=" . mt_rand (1,12) ;
+			$sql = "UPDATE tokens set card_type=0 where card_id=" . mt_rand (1,12) ;
 			self::DbQuery( $sql );
 		}
 		
@@ -162,11 +163,11 @@ class veggiegarden extends Table
 			}
 		}
 		
-		if  ( $removed != 3 )
+		if  ( $removed != 3 )   // SHOULD WE PLACE THE groundhog ?
 			{
 			$random = mt_rand (0,3);
-			$groundhog_pos = array ( 11 ,12 , 21 ,22 ) 
-			self::setGameStateInitialValue( 'groundhog_pos', $groundhog_pos[$random]   );
+			$groundhog_pos = array ( 11 ,12 , 21 ,22 ) ;
+			self::setGameStateInitialValue( 'groundhog_pos', $groundhog_pos[$random] );
 			}
 		else
 			{
@@ -201,6 +202,13 @@ class veggiegarden extends Table
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
+		
+		$result['table'] = $this->cards->getCardsInLocation( 'table' );
+		$result['field'] = $this->cards->getCardsInLocation( 'field' );
+		$result['fence'] = $this->tokens->getCardsInLocation( 'fence' );
+		$result['groundhog_pos'] = self::getGameStateValue('groundhog_pos');
+		
+		$result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
@@ -217,11 +225,14 @@ class veggiegarden extends Table
         This method is called each time we are in a game state with the "updateGameProgression" property set to true 
         (see states.inc.php)
     */
-    function getGameProgression()
+    
+	function getGameProgression()
     {
         // TODO: compute and return the game progression
+		
+		$result = ( self::getGameStateValue('iterations') * 100 ) / ( self::getGameStateValue('max_iterations') + 4 );
 
-        return 0;
+        return $result ;
     }
 
 
@@ -319,7 +330,52 @@ class veggiegarden extends Table
         $this->gamestate->nextState( 'some_gamestate_transition' );
     }    
     */
+	
+	
 
+	
+    function ststartTurn()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+
+	function stplayerpick()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+	
+	function stTarget()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+	
+	function stDestination()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+
+	function stGameEndScoring()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+
+    
+    	
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
 ////////////

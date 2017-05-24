@@ -81,7 +81,7 @@ $machinestates = array(
 		"action" => "stplayerpick",
 		
 		"possibleactions" => array( "pickcard" ),        
-        "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "destination" => 5 ) 
+        "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "selectDestination" => 5 ) 
     ),
 	
 	4 => array(
@@ -100,7 +100,7 @@ $machinestates = array(
         "type" => "activeplayer",
         "description" => clienttranslate('${actplayer} has to select a destination for the card effect'),
 		"descriptionmyturn" => clienttranslate('${you} have to select a destination for the card effect'),
-		"action" => "stTarget",
+		"action" => "stDestination",
 		"args" => "argPossibleDestinations",
 		"possibleactions" => array( "selectTarget" ),
         "transitions" => array( "selectDestination" => 5 ) 
