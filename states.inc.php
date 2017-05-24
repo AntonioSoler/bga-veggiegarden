@@ -64,13 +64,57 @@ $machinestates = array(
     // Note: ID=2 => your first state
 
     2 => array(
-    		"name" => "playerTurn",
-    		"description" => clienttranslate('${actplayer} must play a card or pass'),
-    		"descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-    		"type" => "activeplayer",
-    		"possibleactions" => array( "playCard", "pass" ),
-    		"transitions" => array( "playCard" => 2, "pass" => 2 )
+        "name" => "startTurn",
+		"description" => clienttranslate('a new turn starts...'),
+        "type" => "game",
+        "action" => "ststartTurn",
+        "updateGameProgression" => true, 
+        "transitions" => array( "playerpick" => 3 , "gameEndScoring" => 90 ) ,
+		
     ),
+	
+	3 => array(
+        "name" => "playerpick",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to pick a card from the table'),
+		"descriptionmyturn" => clienttranslate('${you} have to pick a card from the table'),
+		"action" => "stplayerpick",
+		
+		"possibleactions" => array( "pickcard" ),        
+        "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "destination" => 5 ) 
+    ),
+	
+	4 => array(
+        "name" => "selectTarget",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to select a card or token from the board'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the board'),
+		"action" => "stTarget",
+		"args" => "argPossibleTargets",
+		"possibleactions" => array( "selectTarget" ),
+        "transitions" => array( "selectDestination" => 5 ) 
+    ),
+	
+	5 => array(
+        "name" => "selectDestination",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to select a destination for the card effect'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a destination for the card effect'),
+		"action" => "stTarget",
+		"args" => "argPossibleDestinations",
+		"possibleactions" => array( "selectTarget" ),
+        "transitions" => array( "selectDestination" => 5 ) 
+    ),
+		
+    90 => array(
+	   "description" => clienttranslate('Final Score'),
+        "name" => "gameEndScoring",
+        "type" => "game",
+        "action" => "stGameEndScoring",
+        "updateGameProgression" => true,
+        "transitions" => array( "" => 99 )
+    ),
+	
     
 /*
     Examples:

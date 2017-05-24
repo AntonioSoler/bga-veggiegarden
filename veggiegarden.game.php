@@ -34,10 +34,11 @@ class veggiegarden extends Table
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();self::initGameStateLabels( array( 
                 "iterations" => 10,
-                "card_picked" => 11,
-				"card_clicked" => 12,
-				"token_clicked" => 13,
-				"groundhog_pos" => 14
+				"max_iterations" =>11,
+                "card_picked" => 12,
+				"card_clicked" => 13,
+				"token_clicked" => 14,
+				"groundhog_pos" => 15
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
@@ -100,12 +101,12 @@ class veggiegarden extends Table
 		
 		self::setGameStateInitialValue( 'iterations', 0 ); // number of rounds
 		
-		$result=mt_rand (1,6);  //remove 1 card type from the game
+		$removed=mt_rand (1,6);  //remove 1 card type from the game
 		$cards = array();
 		for ( $i=1 ; $i <=6 ; $i++ )
         {
 			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 14 );
-			if ( $i != $result ) 
+			if ( $i != $removed ) 
 				{
 					array_push($cards, $card);   
 				}
@@ -114,41 +115,67 @@ class veggiegarden extends Table
         
 		$cards = array();
 		
-		if  ( $result != 3 )
-			{
-			self::setGameStateInitialValue( 'groundhog_pos',  mt_rand (1,4)  )
-			}
-		else
-			{
-			self::setGameStateInitialValue( 'groundhog_pos', 0 )	
-			}
-	
-		
+			
 		for ( $i=1 ; $i <=3 ; $i++ )
         {
 			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 4 );
 			array_push($cards, $card); 
 		}
 		
-		$this->tokens->createCards( $cards, 'fence' );
+		$this->tokens->createCards( $cards, 'deck' );
 		
-		if  ( $result != 1 )
+		if  ( $removed != 1 )
 		{
-			$sql = "UPDATE tokens set card_type=7 where card_id=" . mt_rand (1,12) ;
+			$sql = "UPDATE tokens set card_type=4 where card_id=" . mt_rand (1,12) ;
 			self::DbQuery( $sql );
 		}
-			
-		
-		
-		
 		
 		
 		//shuffle 
         $this->cards->shuffle( 'deck' );
-       
+        $this->tokens->shuffle( 'deck' );
+		
+		for ($x=0 ; $x<=3 ; $x++)
+		{
+			for ($y=0 ; $y<=3 ; $y++)
+			{
+				$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'field', $x * 10 + $y );
+			}
+		}
+		for ($x=0 ; $x<=3 ; $x++) 
+		{
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x*10 , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x*10+3 , true );
+		}
+		
+	    for ($x=1 ; $x<=2 ; $x++) 
+		{
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 10+$x , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 20+$x , true );
+		}
 	   
-	   
+	    for ($x=1 ; $x<=3 ; $x++)
+		{
+			for ($y=0 ; $y<=3 ; $y++)
+			{
+				$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table', $x );
+			}
+		}
+		
+		if  ( $removed != 3 )
+			{
+			$random = mt_rand (0,3);
+			$groundhog_pos = array ( 11 ,12 , 21 ,22 ) 
+			self::setGameStateInitialValue( 'groundhog_pos', $groundhog_pos[$random]   );
+			}
+		else
+			{
+			self::setGameStateInitialValue( 'groundhog_pos', 0 );
+			}
 
+	    self::setGameStateInitialValue( 'iterations', 0 );	
+		self::setGameStateInitialValue( 'max_iterations', sizeof( $players ) * 7 );
+		
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
