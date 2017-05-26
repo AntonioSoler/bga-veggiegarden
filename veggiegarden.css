@@ -1,7 +1,7 @@
 /**
  *------
- * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * veggiegarden implementation : © <Your name here> <Your email address here>
+ * BGA framework: (c) Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * veggiegarden implementation : (c) Antonio Soler Morgalad.es@gmail.com
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -45,6 +45,201 @@
 @import url(../../../css/csslayer.css); /* Note: you must not use any @import directive other than this one */
 
 /********* You can start writing your CSS below this line: **********/
+
+#deck {
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cardback.jpg');
+    border-radius: 7px;
+    background-size: cover;
+    display: inline;
+    margin: 15px;
+    /* flex: 0 1 auto; */
+    box-shadow: -1px 1px 0px 1px #c0cad1, -3px 7px 0px 1px #d2dce2, -5px 9px 0px 1px #aeb6b7, -9px 15px 0px 1px #ebd8c1, -11px 18px 0px 1px #f2f2f2, -14px 22px 0px 1px #f5eade, 3px 18px 3px 11px rgba(0, 0, 0, 0.58);
+ }
+
+.boarddiv {
+    width: 777px;
+    height: 570px;
+    background-image: url('img/board.jpg');
+    border-radius: 5px;
+    background-size: cover;
+    margin: 15px;
+    flex: 0 1 auto;
+    box-shadow: 3px 7px 3px 2px rgba(0, 0, 0, 0.58);
+    border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 5px;
+ } 
+
+#table_wrap {
+	display: inline-flex;
+	width: 95%;
+}
+
+#tablecards{
+	min-width: 600px;
+	flex: 1 1 auto;
+	border-radius: 5px;
+	min-height: 90px;
+}
+
+#hand{
+	min-width: 600px;
+	min-height: 90px;
+	flex: 1 1 auto;
+	border-radius: 5px;
+}
+.card {    
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cardback.jpg');
+    border-radius: 7px;
+    display: inline;
+    margin: 15px;	
+}
+.field {    
+    width: 141px;
+    height: 91px;
+    border-radius: 7px;
+    position: absolute;
+	border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.fence {    
+    width: 141px;
+    height: 91px;
+    border-radius: 7px;
+    position: absolute;
+	border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#field00{
+ left: 0px;
+ top: 50px;
+}
+#field01{
+ left: 0px;
+ top: 50px;
+}
+#field02{
+ left: 0px;
+ top: 50px;
+}
+#field03{
+ left: 0px;
+ top: 50px;
+}
+#field10{
+ left: 0px;
+ top: 50px;
+}
+#field11{
+ left: 0px;
+ top: 50px;
+}
+#field12{
+ left: 0px;
+ top: 50px;
+}
+#field13{
+ left: 0px;
+ top: 50px;
+}
+#field20{
+ left: 0px;
+ top: 50px;
+}
+#field21{
+ left: 0px;
+ top: 50px;
+}
+#field22{
+ left: 0px;
+ top: 50px;
+}
+#field23{
+ left: 0px;
+ top: 50px;
+}
+#field30{
+ left: 0px;
+ top: 50px;
+}
+#field31{
+ left: 0px;
+ top: 50px;
+}
+#field32{
+ left: 0px;
+ top: 50px;
+}
+#field33{
+ left: 0px;
+ top: 50px;
+}
+#fence00{
+ left: 0px;
+ top: 50px;
+}
+#fence10{
+ left: 0px;
+ top: 50px;
+}
+#fence20{
+ left: 0px;
+ top: 50px;
+}
+#fence30{
+ left: 0px;
+ top: 50px;
+}
+#fence03{
+ left: 0px;
+ top: 50px;
+}
+#fence13{
+ left: 0px;
+ top: 50px;
+}
+#fence23{
+ left: 0px;
+ top: 50px;
+}
+#fence33{
+ left: 0px;
+ top: 50px;
+}
+#fence01{
+ left: 0px;
+ top: 50px;
+}
+#fence02{
+ left: 0px;
+ top: 50px;
+}
+#fence31{
+ left: 0px;
+ top: 50px;
+}
+#fence32{
+ left: 0px;
+ top: 50px;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 /*
