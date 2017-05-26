@@ -22,15 +22,15 @@
     
     Usually, you are using CSS to:
     
-    1°) define the overall layout of your game
+    1Â°) define the overall layout of your game
         (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
 
-    2°) create your CSS-sprites:
+    2Â°) create your CSS-sprites:
         All images of your games should be gathered into a small number of image files. Then, using
         background-image and background-position CSS properties, you create HTML blocks that can 
         display these images correctly (see example below).
     
-    3°) ... anything else:
+    3Â°) ... anything else:
         It is really easy to add and remove CSS classes dynamically from your Javascript with
         dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
         (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
@@ -70,6 +70,7 @@
     border: DarkOliveGreen;
     border-style: solid;
     border-width: 5px;
+    position: relative;
  } 
 
 #table_wrap {
@@ -108,127 +109,127 @@
     border-width: 1px;
 }
 
-.fence {    
-    width: 141px;
-    height: 91px;
+.fence {
+    width: 61px;
+    height: 61px;
     border-radius: 7px;
     position: absolute;
-	border: DarkOliveGreen;
+    border: DarkOliveGreen;
     border-style: solid;
     border-width: 1px;
 }
 
 #field00{
- left: 0px;
- top: 50px;
+ left: 81px;
+ top: 399px;
 }
 #field01{
- left: 0px;
- top: 50px;
+ left: 81px;
+ top: 290px;
 }
 #field02{
- left: 0px;
- top: 50px;
+ left: 81px;
+ top: 185px;
 }
 #field03{
- left: 0px;
- top: 50px;
+ left: 81px;
+ top: 79px;
 }
 #field10{
- left: 0px;
- top: 50px;
+ left: 239px;
+ top: 399px;
 }
 #field11{
- left: 0px;
- top: 50px;
+ left: 239px;
+ top: 290px;
 }
 #field12{
- left: 0px;
- top: 50px;
+ left: 239px;
+ top: 185px;
 }
 #field13{
- left: 0px;
- top: 50px;
+ left: 239px;
+ top: 79px;
 }
 #field20{
- left: 0px;
- top: 50px;
+ left: 396px;
+ top: 399px;
 }
 #field21{
- left: 0px;
- top: 50px;
+ left: 396px;
+ top: 290px;
 }
 #field22{
- left: 0px;
- top: 50px;
+ left: 396px;
+ top: 185px;
 }
 #field23{
- left: 0px;
- top: 50px;
+ left: 396px;
+ top: 79px;
 }
 #field30{
- left: 0px;
- top: 50px;
+ left: 556px;
+ top: 399px;
 }
 #field31{
- left: 0px;
- top: 50px;
+ left: 556px;
+ top: 290px;
 }
 #field32{
- left: 0px;
- top: 50px;
+ left: 556px;
+ top: 185px;
 }
 #field33{
- left: 0px;
- top: 50px;
+ left: 556px;
+ top: 79px;
 }
 #fence00{
- left: 0px;
- top: 50px;
+ left: 121px;
+ top: 506px;
 }
 #fence10{
- left: 0px;
- top: 50px;
+ left: 279px;
+ top: 506px;
 }
 #fence20{
- left: 0px;
- top: 50px;
+ left: 437px;
+ top: 506px;
 }
 #fence30{
- left: 0px;
- top: 50px;
+ left: 595px;
+ top: 506px;
 }
 #fence03{
- left: 0px;
- top: 50px;
+ left: 121px;
+ top: 0px;
 }
 #fence13{
- left: 0px;
- top: 50px;
+ left: 279px;
+ top: 0px;
 }
 #fence23{
- left: 0px;
- top: 50px;
+ left: 437px;
+ top: 0px;
 }
 #fence33{
- left: 0px;
- top: 50px;
+ left: 595px;
+ top: 0px;
 }
 #fence01{
- left: 0px;
- top: 50px;
+ left: 1px;
+ top: 306px;
 }
 #fence02{
- left: 0px;
- top: 50px;
+ left: 1px;
+ top: 201px;
 }
 #fence31{
- left: 0px;
- top: 50px;
+ left: 713px;
+ top: 306px;
 }
 #fence32{
- left: 0px;
- top: 50px;
+ left: 713px;
+ top: 201px;
 }
 
 
