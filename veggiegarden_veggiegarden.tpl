@@ -33,14 +33,14 @@
 	<div id="playArea">
 		<div id="table_wrap">
 			<div id="deck"></div>
-			<div id="tablecards" class="whiteblock table"></div>
+			<div id="table" class="whiteblock table"></div>
 		</div>
 		<div id="boardwrapper">
 			<div id="boardPanel" class="boarddiv">
-				<div id="field00" class="field"></div>
-				<div id="field01" class="field"></div>
-				<div id="field02" class="field"></div>
-				<div id="field03" class="field"></div>
+				<div id="field0" class="field"></div>
+				<div id="field1" class="field"></div>
+				<div id="field2" class="field"></div>
+				<div id="field3" class="field"></div>
 				<div id="field10" class="field"></div>
 				<div id="field11" class="field"></div>
 				<div id="field12" class="field"></div>
@@ -68,7 +68,7 @@
 				
 			</div>
 		</div>
-		<div id="table_wrap">
+		<div id="hand_wrap">
 			<div id="hand" class="whiteblock table"></div>
 		</div>
 	</div>
@@ -83,6 +83,9 @@ var jstpl_some_game_item=&amp;#39;&amp;lt;div class=&amp;quot;my_game_item&amp;q
 id=&amp;quot;my_game_item_${id}&amp;quot;&amp;gt;&amp;lt;\/div&amp;gt;&amp;#39;;
 
 */
+
+var jstpl_player_board = '<br>\<div class="cp_board"></b>\<div id="cards_p${id}" class="cardcounter_board"> <div class="cardcounter"></div> <span id="cardcount_p${id}">0</span>\</div>';
+
 
 </script> {OVERALL_GAME_FOOTER}</body>
 </html>

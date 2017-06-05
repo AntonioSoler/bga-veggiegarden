@@ -53,9 +53,31 @@ function (dojo, declare) {
             {
                 var player = gamedatas.players[player_id];
                          
-                // TODO: Setting up players boards if needed
+                // Setting up players boards if needed
+                var player_board_div = $('player_board_'+player_id);
+                dojo.place( this.format_block('jstpl_player_board', player ), player_board_div );
+				dojo.byId("cardcount_p"+player_id).innerHTML=gamedatas.cardcount[player_id].amount;
+				
             }
             
+			for( var i in this.gamedatas.table )
+				{
+					var card = this.gamedatas.table[i];
+					this.placecard('table',card['id'],card['type']);
+				}
+			
+			for( var i in this.gamedatas.field )
+				{
+					var card = this.gamedatas.field[i];
+					this.placecard('field'+card['location_arg'] ,card['id'],card['type']);
+				}
+			
+			for( var i in this.gamedatas.hand )
+				{
+					var card = this.gamedatas.hand[i];
+					this.placecard('hand',card['id'],card['type']);
+				}
+			
             // TODO: Set up your game interface here, according to "gamedatas"
             
  
@@ -157,6 +179,17 @@ function (dojo, declare) {
             script.
         
         */
+		
+		placecard: function ( destination, card_id ,card_type )
+		{
+			xpos= -140*((card_id - 1 )%3 );
+			ypos= -90*(Math.floor( (card_id -1 ) / 3 ));
+			position= xpos+"px "+ ypos+"px ";
+			
+			//dojo.style('stile_back_'+location_arg , "background-position", position);
+			
+			dojo.place( "<div id='card_"+card_id+"' class='card' style='background-position:"+position+";'></div>" , destination, "last");			
+		},
 
 
         ///////////////////////////////////////////////////

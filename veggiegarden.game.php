@@ -155,12 +155,9 @@ class veggiegarden extends Table
 				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 20+$x , true );
 		}
 	   
-	    for ($x=1 ; $x<=3 ; $x++)
+	    for ($x=1 ; $x<=4 ; $x++)
 		{
-			for ($y=0 ; $y<=3 ; $y++)
-			{
-				$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table', $x );
-			}
+			$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table', $x );
 		}
 		
 		if  ( $removed != 3 )   // SHOULD WE PLACE THE groundhog ?
@@ -177,7 +174,13 @@ class veggiegarden extends Table
 	    self::setGameStateInitialValue( 'iterations', 0 );	
 		self::setGameStateInitialValue( 'max_iterations', sizeof( $players ) * 7 );
 		
-        // Activate first player (which is in general a good idea :) )
+        
+		foreach( $players as $player_id => $player )
+        {
+            $this->cards->pickCardsForLocation( 2, 'deck' , 'hand', $player_id ); 
+        }
+		
+		// Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
         /************ End of the game initialization *****/
@@ -209,6 +212,10 @@ class veggiegarden extends Table
 		$result['groundhog_pos'] = self::getGameStateValue('groundhog_pos');
 		
 		$result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
+		
+		$sql = "SELECT card_location_arg, COUNT(*) amount FROM cards WHERE 1 GROUP BY card_location_arg ";
+        $result['cardcount'] = self::getCollectionFromDb( $sql );
+		
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
@@ -339,7 +346,8 @@ class veggiegarden extends Table
         // Do some stuff ...
         
         // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
+        
+		$this->gamestate->nextState( 'playerpick' );
     }
 
 	function stplayerpick()
