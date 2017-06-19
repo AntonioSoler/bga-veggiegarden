@@ -53,16 +53,16 @@
 				<div id="field31" class="field"></div>
 				<div id="field32" class="field"></div>
 				<div id="field33" class="field"></div>
-				<div id="fence00" class="fence"></div>
+				<div id="fence0" class="fence"></div>
 				<div id="fence10" class="fence"></div>
 				<div id="fence20" class="fence"></div>
 				<div id="fence30" class="fence"></div>
-				<div id="fence03" class="fence"></div>
+				<div id="fence3" class="fence"></div>
 				<div id="fence13" class="fence"></div>
 				<div id="fence23" class="fence"></div>
 				<div id="fence33" class="fence"></div>
-				<div id="fence01" class="fence"></div>
-				<div id="fence02" class="fence"></div>
+				<div id="fence1" class="fence"></div>
+				<div id="fence2" class="fence"></div>
 				<div id="fence31" class="fence"></div>
 				<div id="fence32" class="fence"></div>
 				

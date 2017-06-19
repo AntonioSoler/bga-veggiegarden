@@ -184,6 +184,29 @@
     display: inline-block;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
 }
+
+.token {
+    width: 60px;
+    height: 60px;
+    background-image: url('img/tokens.png');
+    border-radius: 3px;
+    display: inline-block;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+}
+
+.rabbit {
+    width: 68px;
+    height: 68px;
+    background-image: url('img/tokens.png');
+    border-radius: 50%;
+    display: inline-block;
+    background-color:white;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+    background-position: -180px;
+    margin-top: -4px;
+    margin-left: -4px;
+}
+
 .field {    
     width: 141px;
     height: 91px;
@@ -268,7 +291,7 @@
  left: 556px;
  top: 79px;
 }
-#fence00{
+#fence0{
  left: 121px;
  top: 506px;
 }
@@ -284,7 +307,7 @@
  left: 595px;
  top: 506px;
 }
-#fence03{
+#fence3{
  left: 121px;
  top: 0px;
 }
@@ -300,11 +323,11 @@
  left: 595px;
  top: 0px;
 }
-#fence01{
+#fence1{
  left: 1px;
  top: 306px;
 }
-#fence02{
+#fence2{
  left: 1px;
  top: 201px;
 }
@@ -327,13 +350,27 @@
     display: inline-block;
 }
 
+.borderpulse {
+    cursor: pointer;
+    animation: pulse 2s ease infinite;
+    z-index: 200 !important;
+}
 
+@keyframes pulse {
+  0% {
+  box-shadow: 
+	    0 0 0 5px #c0dd00;
+  }
 
+  100% {
+  box-shadow: 
+	    0 0 0 1px #c0dd00;
+  }
+}
 
-
-
-
-
+.tileselected {
+border: 2px red solid !important;
+}
 
 /*
     Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):

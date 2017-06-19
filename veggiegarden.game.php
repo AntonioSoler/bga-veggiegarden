@@ -99,9 +99,7 @@ class veggiegarden extends Table
 
         // TODO: setup the initial game situation here
 		
-		self::setGameStateInitialValue( 'iterations', 0 ); // number of rounds
-		self::setGameStateInitialValue( 'max_iterations', sizeof ($players) * 6 ); // Max number of rounds
-		
+			
 		$removed=mt_rand (1,6);  //remove 1 card type from the game
 		$cards = array();
 		for ( $i=1 ; $i <=6 ; $i++ )
@@ -151,8 +149,8 @@ class veggiegarden extends Table
 		
 	    for ($x=1 ; $x<=2 ; $x++) 
 		{
-				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 10+$x , true );
-				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 20+$x , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 30+$x , true );
 		}
 	   
 	    for ($x=1 ; $x<=4 ; $x++)
@@ -173,8 +171,10 @@ class veggiegarden extends Table
 
 	    self::setGameStateInitialValue( 'iterations', 0 );	
 		self::setGameStateInitialValue( 'max_iterations', sizeof( $players ) * 7 );
+		self::setGameStateInitialValue( 'card_picked', 0 );	
+		self::setGameStateInitialValue( 'card_clicked', 0 );	
+		self::setGameStateInitialValue( 'token_clicked', 0 );	
 		
-        
 		foreach( $players as $player_id => $player )
         {
             $this->cards->pickCardsForLocation( 2, 'deck' , 'hand', $player_id ); 
@@ -287,8 +287,27 @@ class veggiegarden extends Table
     }
     
     */
-
-    
+	
+	function pickcard( $card_id)
+    {
+	self::checkAction( 'pickcard' );
+	$player_id = self::getActivePlayerId();
+	$thiscard= $this->cards->getCard( $card_id );
+	self::setGameStateValue( 'card_picked', $card_id );
+	
+	//$this->cards->moveCard( $card_id,'hand',$player_id );
+	$thiscardtype=$thiscard['type'];
+	self::notifyAllPlayers( "selectcard", clienttranslate( '${player_name} picks a ${thiscard_name} card' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $card_id ,  
+						'thiscard_name' =>  $this->card_types[$thiscardtype]['name']
+						) );	
+			
+	$this->gamestate->nextState( 'selectTarget' );
+    }
+	
+	
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state arguments
 ////////////
@@ -302,19 +321,56 @@ class veggiegarden extends Table
     /*
     
     Example for game state "MyGameState":
-    
-    function argMyGameState()
-    {
-        // Get some values from the current game situation in database...
-    
-        // return values:
-        return array(
-            'variable1' => $value1,
-            'variable2' => $value2,
-            ...
-        );
-    }    
     */
+    
+	function argPossibleTargets()
+    {
+        $cardpicked=self::getGameStateValue( 'card_picked');
+		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+		$Xgroundhog_pos= $groundhog_pos % 10 ;
+		$Ygroundhog_pos= intdiv( $groundhog_pos , 10 ) ;
+		$card=$this->cards->getCard( $card_id );
+		$result=  array( 'possiblemoves' => array() );
+        switch ($card['type']){
+		case "1":   // CARROTS Move BUNNY
+		break;
+		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
+			for ($x=0 ; $x<= 3 $x++)
+			{
+				for ($y=0 ; $y<= 3 $y++)
+				{
+					if ( $Xgroundhog_pos != $x ) and ( $Ygroundhog_pos != $Y )
+					{ 
+						array_push($result['possiblemoves'],"field".($x*10+$Y));
+					}
+				}	
+			}
+			for ($x=0 ; $x<=3 ; $x++) 
+			{
+				array_push($result['possiblemoves'],"fence".($x*10 ) );
+				array_push($result['possiblemoves'],"fence".($x*10+3) );
+			}
+			for ($y=1 ; $y<=2 ; $y++) 
+			{
+				array_push($result['possiblemoves'],"fence".($y)  );
+				array_push($result['possiblemoves'],"fence".(30+$y) );
+			}
+			break;
+		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
+		break;
+		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
+		break;
+		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
+		break;
+		case "6":     //TOMATO   Discard a card from the table and replace it with one from the table.
+		break;
+		
+		}
+	     
+        // return values:
+        return $result ;
+    }    
+    
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state actions
@@ -338,8 +394,6 @@ class veggiegarden extends Table
     }    
     */
 	
-	
-
 	
     function ststartTurn()
     {
