@@ -1,8 +1,8 @@
 <?php
 /**
  *------
- * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * veggiegarden implementation : © <Your name here> <Your email address here>
+ * BGA framework: (c) Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * veggiegarden implementation : (c) Antonio Soler Morgalad.es@gmail.com
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -64,13 +64,57 @@ $machinestates = array(
     // Note: ID=2 => your first state
 
     2 => array(
-    		"name" => "playerTurn",
-    		"description" => clienttranslate('${actplayer} must play a card or pass'),
-    		"descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-    		"type" => "activeplayer",
-    		"possibleactions" => array( "playCard", "pass" ),
-    		"transitions" => array( "playCard" => 2, "pass" => 2 )
+        "name" => "startTurn",
+		"description" => clienttranslate('a new turn starts...'),
+        "type" => "game",
+        "action" => "ststartTurn",
+        "updateGameProgression" => true, 
+        "transitions" => array( "playerpick" => 3 , "gameEndScoring" => 90 ) ,
+		
     ),
+	
+	3 => array(
+        "name" => "playerpick",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to pick a veggie from the harvest'),
+		"descriptionmyturn" => clienttranslate('${you} have to pick a veggie from the harvest'),
+		"action" => "stplayerpick",
+		
+		"possibleactions" => array( "pickcard" ),        
+        "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "selectDestination" => 5 ) 
+    ),
+	
+	4 => array(
+        "name" => "selectTarget",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to select a card or token from the garden'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the garden'),
+		"action" => "stTarget",
+		"args" => "argPossibleTargets",
+		"possibleactions" => array( "selectTarget" ),
+        "transitions" => array( "selectDestination" => 5 ) 
+    ),
+	
+	5 => array(
+        "name" => "selectDestination",  
+        "type" => "activeplayer",
+        "description" => clienttranslate('${actplayer} has to select a destination for the card effect'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a destination for the card effect'),
+		"action" => "stDestination",
+		"args" => "argPossibleDestinations",
+		"possibleactions" => array( "selectTarget" ),
+        "transitions" => array( "selectDestination" => 5 ) 
+    ),
+		
+    90 => array(
+	   "description" => clienttranslate('Final Score'),
+        "name" => "gameEndScoring",
+        "type" => "game",
+        "action" => "stGameEndScoring",
+        "updateGameProgression" => true,
+        "transitions" => array( "" => 99 )
+    ),
+	
     
 /*
     Examples:

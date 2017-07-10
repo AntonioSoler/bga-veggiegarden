@@ -1,7 +1,7 @@
 /**
  *------
- * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * veggiegarden implementation : © <Your name here> <Your email address here>
+ * BGA framework: (c) Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * veggiegarden implementation : (c) Antonio Soler Morgalad.es@gmail.com
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -22,15 +22,15 @@
     
     Usually, you are using CSS to:
     
-    1°) define the overall layout of your game
+    1) define the overall layout of your game
         (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
 
-    2°) create your CSS-sprites:
+    2) create your CSS-sprites:
         All images of your games should be gathered into a small number of image files. Then, using
         background-image and background-position CSS properties, you create HTML blocks that can 
         display these images correctly (see example below).
     
-    3°) ... anything else:
+    3) ... anything else:
         It is really easy to add and remove CSS classes dynamically from your Javascript with
         dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
         (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
@@ -45,7 +45,414 @@
 @import url(../../../css/csslayer.css); /* Note: you must not use any @import directive other than this one */
 
 /********* You can start writing your CSS below this line: **********/
+.roundedbox .roundedboxinner {
+    position: relative;
+    height: 5%;
+}
 
+#playArea {
+  width: 100%;
+  height: 100%;
+  background-image: url('img/background.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  /* perspective: 2000px; */
+  /* display: inline-flex; */
+  margin: 1px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+@media screen and (min-width: 1920px){
+	#playareascaler{
+	/* zoom: 0.9;
+	-ms-zoom: 0.9;
+	-webkit-zoom: 0.9; */
+	transform: scale(0.9,0.9);
+	transform-origin: top left;
+	}
+}
+
+@media screen and (max-width: 1913px) and (min-width: 1025px){
+	#playareascaler{
+	/*zoom: 0.7;
+	-ms-zoom: 0.7;
+	-webkit-zoom: 0.7; */
+	transform: scale(0.7,0.7);
+	transform-origin: top left;
+	}
+	#playArea {
+    width: 150%;
+    }
+}
+
+
+@media screen and (max-width: 1024px) and (min-width: 800px){
+	#playareascaler{
+	/* zoom: 0.5;
+	-ms-zoom: 0.5;
+	-webkit-zoom: 0.5; */
+	transform: scale(0.5,0.5);
+	transform-origin: top left;
+	}
+	#playArea {
+    width: 1470px;
+    }
+}
+
+@media screen and (max-width: 799px) and (min-width: 1px){
+	#playareascaler{
+	/* zoom: 0.5;
+	-ms-zoom: 0.5;
+	-webkit-zoom: 0.5; */
+	transform: scale(0.5,0.5);
+	transform-origin: top left;
+	}
+	#playArea {
+    width: 1500px;
+    }
+}
+
+
+#deck {
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cardback.jpg');
+    border-radius: 7px;
+    background-size: cover;
+    display: inline-block;
+    margin: 15px;
+    /* flex: 0 1 auto; */
+    
+    margin-bottom: 30px;
+    transform:translateZ(33px);
+ }
+
+ #deck div:nth-child(1) {
+ 	transform:translate3d(1px,1px,-3px);
+ }                             
+#deck div:nth-child(2) {        
+ 	transform:translate3d(2px,2px,-6px);
+ }                             
+#deck div:nth-child(3) {        
+ 	transform:translate3d(3px,3px,-9px);
+ }                             
+#deck div:nth-child(4) {        
+ 	transform:translate3d(4px,4px,-12px);
+ }                             
+#deck div:nth-child(5) {        
+ 	transform:translate3d(5px,5px,-15px);
+ }                             
+#deck div:nth-child(6) {        
+ 	transform:translate3d(6px,6px,-18px);
+ }                             
+#deck div:nth-child(7) {        
+ 	transform:translate3d(7px,7px,-21px);
+ }                             
+#deck div:nth-child(8) {        
+ 	transform:translate3d(8px,8px,-24px);
+}                              
+#deck div:nth-child(9) {        
+ 	transform:translate3d(9px,9px,-27px);
+ 	box-shadow: 10px 20px 3px 11px rgba(0, 0, 0, 0.26);
+ }
+
+.card_back {
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cardback.jpg');
+    border-radius: 7px;
+    background-size: cover;
+    display: inline-block;
+    position:absolute;
+    box-shadow: 1px 0px 2px 2px rgba(82, 82, 82, 0.26);
+ }
+
+.boarddiv {
+    width: 777px;
+    height: 570px;
+    background-image: url('img/board.jpg');
+    border-radius: 5px;
+    background-size: cover;
+    margin: 5px;
+    flex: 0 1 auto;
+    box-shadow: 3px 7px 3px 2px rgba(0, 0, 0, 0.58);
+    border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 5px;
+    position: relative;
+ } 
+
+#table_wrap {
+	display: inline-block;
+	width: 95%;
+}
+
+#table{
+	min-width: 600px;
+	min-height: 110px;
+	/* flex: 1 1 auto; */
+	border-radius: 10px;
+	display:inline-block;
+}
+
+
+#table .card {
+	margin:5px;
+	position:relative !important;
+}
+
+#hand .card {
+	margin:5px;
+	position:relative !important;
+}
+
+.whiteblock {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding: 5px;
+}
+
+#hand{
+	width: 790px;
+	min-height: 210px;
+	transform: rotatex(-12deg) translateZ(12px);
+	flex: 1 1 auto;
+	border-radius: 5px;
+}
+.card {
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cards.jpg');
+    border-radius: 7px;
+    display: inline-block;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.22);
+    position: absolute;
+}
+
+
+.tooltipcard {
+    width: 180px;
+    height: 240px;
+    background-image: url('img/tooltips.jpg');
+    border-radius: 7px;
+    display: inline-block;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+}
+
+.tooltiptext{
+	position:absolute;
+	margin-top: 190px;
+	margin-left: 23px;
+	width: 137px;
+	font-size: 12px;
+	font-weight: bold;
+}
+.token {
+    width: 60px;
+    height: 60px;
+    background-image: url('img/tokens.png');
+    border-radius: 3px;
+    display: inline-block;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+}
+
+.rabbit {
+    width: 68px;
+    height: 68px;
+    background-image: url('img/tokens.png');
+    border-radius: 50%;
+    display: inline-block;
+    background-color:white;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+    background-position: -180px;
+    background-repeat:no-repeat;
+    margin-top: -4px;
+    margin-left: -4px;
+}
+
+.groundhog {
+    width: 67px;
+    height: 67px;
+    background-image: url('img/tokens.png');
+    border-radius: 50%;
+    background-color:white;
+    background-repeat:no-repeat;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+    background-position: -235px;
+    margin-top: 10px;
+    margin-left: 3px;
+    position: absolute;
+    z-index: 300;
+}
+
+.field {
+    width: 141px;
+    height: 91px;
+    border-radius: 7px;
+    position: absolute;
+    border: DarkOliveGreen;
+    border-style: solid;
+    position: absolute;
+    border-width: 1px;
+    display: inline-block;
+}
+
+.fence {
+    width: 61px;
+    height: 61px;
+    border-radius: 7px;
+    position: absolute;
+    border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 1px;
+}
+
+#field0{
+ left: 81px;
+ top: 399px;
+}
+#field1{
+ left: 81px;
+ top: 290px;
+}
+#field2{
+ left: 81px;
+ top: 185px;
+}
+#field3{
+ left: 81px;
+ top: 79px;
+}
+#field10{
+ left: 239px;
+ top: 399px;
+}
+#field11{
+ left: 239px;
+ top: 290px;
+}
+#field12{
+ left: 239px;
+ top: 185px;
+}
+#field13{
+ left: 239px;
+ top: 79px;
+}
+#field20{
+ left: 396px;
+ top: 399px;
+}
+#field21{
+ left: 396px;
+ top: 290px;
+}
+#field22{
+ left: 396px;
+ top: 185px;
+}
+#field23{
+ left: 396px;
+ top: 79px;
+}
+#field30{
+ left: 556px;
+ top: 399px;
+}
+#field31{
+ left: 556px;
+ top: 290px;
+}
+#field32{
+ left: 556px;
+ top: 185px;
+}
+#field33{
+ left: 556px;
+ top: 79px;
+}
+#fence0{
+ left: 121px;
+ top: 506px;
+}
+#fence10{
+ left: 279px;
+ top: 506px;
+}
+#fence20{
+ left: 437px;
+ top: 506px;
+}
+#fence30{
+ left: 595px;
+ top: 506px;
+}
+#fence3{
+ left: 121px;
+ top: 0px;
+}
+#fence13{
+ left: 279px;
+ top: 0px;
+}
+#fence23{
+ left: 437px;
+ top: 0px;
+}
+#fence33{
+ left: 595px;
+ top: 0px;
+}
+#fence1{
+ left: 1px;
+ top: 306px;
+}
+#fence2{
+ left: 1px;
+ top: 201px;
+}
+#fence31{
+ left: 713px;
+ top: 306px;
+}
+#fence32{
+ left: 713px;
+ top: 201px;
+}
+
+.cardcounter {
+    width: 50px;
+    height: 50px;
+    margin: 1px;
+    background-image: url(img/hand_icon.png);
+    background-size: cover;
+    position: relative;
+    display: inline-block;
+}
+
+.borderpulse {
+    cursor: pointer;
+    animation: pulse 2s ease infinite;
+    z-index: 200 !important;
+}
+
+@keyframes pulse {
+  0% {
+  box-shadow: 
+	    0 0 0 5px #c0dd00;
+  }
+
+  100% {
+  box-shadow: 
+	    0 0 0 1px #c0dd00;
+  }
+}
+
+.tileselected {
+border: 2px red solid !important;
+}
 
 /*
     Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):

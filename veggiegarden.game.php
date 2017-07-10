@@ -1,8 +1,8 @@
 <?php
  /**
   *------
-  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
-  * veggiegarden implementation : © <Your name here> <Your email address here>
+  * BGA framework: (c) Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+  * veggiegarden implementation : (c) Antonio Soler Morgalad.es@gmail.com
   * 
   * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
   * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -34,10 +34,11 @@ class veggiegarden extends Table
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();self::initGameStateLabels( array( 
                 "iterations" => 10,
-                "card_picked" => 11,
-				"card_clicked" => 12,
-				"token_clicked" => 13,
-				"groundhog_pos" => 14
+				"max_iterations" =>11,
+                "card_picked" => 12,
+				"card_clicked" => 13,
+				"token_clicked" => 14,
+				"groundhog_pos" => 15
             //      ...
             //    "my_first_game_variant" => 100,
             //    "my_second_game_variant" => 101,
@@ -98,14 +99,13 @@ class veggiegarden extends Table
 
         // TODO: setup the initial game situation here
 		
-		self::setGameStateInitialValue( 'iterations', 0 ); // number of rounds
-		
-		$result=mt_rand (1,6);  //remove 1 card type from the game
+			
+		$removed=mt_rand (1,6);  //remove 1 card type from the game
 		$cards = array();
 		for ( $i=1 ; $i <=6 ; $i++ )
         {
 			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 14 );
-			if ( $i != $result ) 
+			if ( $i != $removed ) 
 				{
 					array_push($cards, $card);   
 				}
@@ -114,42 +114,73 @@ class veggiegarden extends Table
         
 		$cards = array();
 		
-		if  ( $result != 3 )
-			{
-			self::setGameStateInitialValue( 'groundhog_pos',  mt_rand (1,4)  )
-			}
-		else
-			{
-			self::setGameStateInitialValue( 'groundhog_pos', 0 )	
-			}
-	
-		
+			
 		for ( $i=1 ; $i <=3 ; $i++ )
         {
 			$card = array( 'type' => $i , 'type_arg' => 0  , 'nbr' => 4 );
 			array_push($cards, $card); 
 		}
 		
-		$this->tokens->createCards( $cards, 'fence' );
+		$this->tokens->createCards( $cards, 'deck' );
 		
-		if  ( $result != 1 )
+		if  ( $removed != 1 )   // SHOULD WE PLACE THE BUNNY ?
 		{
-			$sql = "UPDATE tokens set card_type=7 where card_id=" . mt_rand (1,12) ;
+			$sql = "UPDATE tokens set card_type=0 where card_id=" . mt_rand (1,12) ;
 			self::DbQuery( $sql );
 		}
-			
-		
-		
-		
 		
 		
 		//shuffle 
         $this->cards->shuffle( 'deck' );
-       
+        $this->tokens->shuffle( 'deck' );
+		
+		for ($x=0 ; $x<=3 ; $x++)
+		{
+			for ($y=0 ; $y<=3 ; $y++)
+			{
+				$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'field', $x * 10 + $y );
+			}
+		}
+		for ($x=0 ; $x<=3 ; $x++) 
+		{
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x*10 , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x*10+3 , true );
+		}
+		
+	    for ($x=1 ; $x<=2 ; $x++) 
+		{
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', $x , true );
+				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 30+$x , true );
+		}
 	   
-	   
+	    for ($x=1 ; $x<=4 ; $x++)
+		{
+			$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table', $x );
+		}
+		
+		if  ( $removed != 3 )   // SHOULD WE PLACE THE groundhog ?
+			{
+			$random = mt_rand (0,3);
+			$groundhog_pos = array ( 11 ,12 , 21 ,22 ) ;
+			self::setGameStateInitialValue( 'groundhog_pos', $groundhog_pos[$random] );
+			}
+		else
+			{
+			self::setGameStateInitialValue( 'groundhog_pos', 0 );
+			}
 
-        // Activate first player (which is in general a good idea :) )
+	    self::setGameStateInitialValue( 'iterations', 0 );	
+		self::setGameStateInitialValue( 'max_iterations', sizeof( $players ) * 7 );
+		self::setGameStateInitialValue( 'card_picked', 0 );	
+		self::setGameStateInitialValue( 'card_clicked', 0 );	
+		self::setGameStateInitialValue( 'token_clicked', 0 );	
+		
+		foreach( $players as $player_id => $player )
+        {
+            $this->cards->pickCardsForLocation( 2, 'deck' , 'hand', $player_id ); 
+        }
+		
+		// Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
 
         /************ End of the game initialization *****/
@@ -174,6 +205,17 @@ class veggiegarden extends Table
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
+		
+		$result['table'] = $this->cards->getCardsInLocation( 'table' );
+		$result['field'] = $this->cards->getCardsInLocation( 'field' );
+		$result['fence'] = $this->tokens->getCardsInLocation( 'fence' );
+		$result['groundhog'] = self::getGameStateValue('groundhog_pos');
+		
+		$result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
+		
+		$sql = "SELECT card_location_arg, COUNT(*) amount FROM cards WHERE 1 GROUP BY card_location_arg ";
+        $result['cardcount'] = self::getCollectionFromDb( $sql );
+		
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   
@@ -190,11 +232,14 @@ class veggiegarden extends Table
         This method is called each time we are in a game state with the "updateGameProgression" property set to true 
         (see states.inc.php)
     */
-    function getGameProgression()
+    
+	function getGameProgression()
     {
         // TODO: compute and return the game progression
+		
+		$result = ( self::getGameStateValue('iterations') * 100 ) / ( self::getGameStateValue('max_iterations') + 4 );
 
-        return 0;
+        return $result ;
     }
 
 
@@ -242,8 +287,27 @@ class veggiegarden extends Table
     }
     
     */
-
-    
+	
+	function pickcard( $card_id)
+    {
+	self::checkAction( 'pickcard' );
+	$player_id = self::getActivePlayerId();
+	$thiscard= $this->cards->getCard( $card_id );
+	self::setGameStateValue( 'card_picked', $card_id );
+	
+	//$this->cards->moveCard( $card_id,'hand',$player_id );
+	$thiscardtype=$thiscard['type'];
+	self::notifyAllPlayers( "selectcard", clienttranslate( '${player_name} picks a ${thiscard_name} card' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $card_id ,  
+						'thiscard_name' =>  $this->card_types[$thiscardtype]['name']
+						) );	
+			
+	$this->gamestate->nextState( 'selectTarget' );
+    }
+	
+	
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state arguments
 ////////////
@@ -257,19 +321,108 @@ class veggiegarden extends Table
     /*
     
     Example for game state "MyGameState":
-    
-    function argMyGameState()
-    {
-        // Get some values from the current game situation in database...
-    
-        // return values:
-        return array(
-            'variable1' => $value1,
-            'variable2' => $value2,
-            ...
-        );
-    }    
     */
+    
+	function argPossibleTargets()
+    {   
+		$player_id = self::getActivePlayerId();
+        $cardpicked=self::getGameStateValue( 'card_picked');
+		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+		$Ygroundhog_pos= $groundhog_pos % 10 ;
+		$Xgroundhog_pos=  ($groundhog_pos - $groundhog_pos % 10) / 10; 
+		$card=$this->cards->getCard( $cardpicked );
+		$result=  array( 'possiblemoves' => array() );
+        switch ($card['type'])
+		{
+		case "1":   // CARROTS Move BUNNY
+		    $sql = "select card_location_arg from tokens where card_type=0";
+			$bunnypos=self::getUniqueValueFromDB( $sql );
+			array_push($result["possiblemoves"],"fence".$bunnypos);
+			
+		break;
+		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
+			for ($x=0 ; $x<= 3 ; $x++)
+			{
+				for ($y=0 ; $y<= 3 ;$y++)
+				{
+					if (( $Xgroundhog_pos != $x ) and ( $Ygroundhog_pos != $y ))
+					{ 
+						array_push($result["possiblemoves"],"field".($x*10+$y));
+					}
+				}	
+			}
+			for ($x=0 ; $x<=3 ; $x++) 
+			{
+				array_push($result["possiblemoves"],"fence".($x*10 ) );
+				array_push($result["possiblemoves"],"fence".($x*10+3) );
+			}
+			for ($y=1 ; $y<=2 ; $y++) 
+			{
+				array_push($result["possiblemoves"],"fence".($y)  );
+				array_push($result["possiblemoves"],"fence".(30+$y) );
+			}
+			break;
+		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
+			for ($x=1 ; $x<= 2; $x++)
+				{
+					for ($y=1 ; $y<= 2 ;$y++)
+					{
+						if ( $groundhog_pos != ($x*10 + $y ))
+						{ 
+							array_push($result["possiblemoves"],"field".($x*10+$y));
+						}
+					}	
+				}
+			break;
+		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
+			for ($x=0 ; $x<= 3 ;$x++)
+				{
+					for ($y=0 ; $y<= 3; $y++)
+					{
+						if ( $groundhog_pos != ($x*10 + $y ))
+						{ 
+							array_push($result["possiblemoves"],"field".($x*10+$y));
+						}
+					}	
+				}
+			for ($x=0 ; $x<=3 ; $x++) 
+				{
+					array_push($result["possiblemoves"],"fence".($x*10 ) );
+					array_push($result["possiblemoves"],"fence".($x*10+3) );
+				}
+				for ($y=1 ; $y<=2 ; $y++) 
+				{
+					array_push($result["possiblemoves"],"fence".($y)  );
+					array_push($result["possiblemoves"],"fence".(30+$y) );
+				}
+			
+			break;
+		break;
+		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
+			$hand = $this->cards->getCardsInLocation( 'hand', $player_id );
+		    foreach( $hand as $thiscard => $hand )
+			{
+				array_push($result["possiblemoves"],"card_".$thiscard);
+			}
+		break;
+		case "6":     //TOMATO   Discard a card from the table and replace it with one from the table.(the groundhog blocks one card)
+					for ($x=0 ; $x<= 3 ;$x++)
+					{
+						for ($y=0 ; $y<= 3 ;$y++)
+						{
+							if ( $groundhog_pos !=( $x*10 + $y ))
+							{ 
+								array_push($result["possiblemoves"],"field".($x*10+$y));
+							}
+						}	
+					}
+		break;
+		}
+	     
+        // return values:
+        return $result ;
+    }    
+    
 
 //////////////////////////////////////////////////////////////////////////////
 //////////// Game state actions
@@ -292,7 +445,51 @@ class veggiegarden extends Table
         $this->gamestate->nextState( 'some_gamestate_transition' );
     }    
     */
+	
+	
+    function ststartTurn()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        
+		$this->gamestate->nextState( 'playerpick' );
+    }
 
+	function stplayerpick()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+	
+	function stTarget()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+	
+	function stDestination()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+
+	function stGameEndScoring()
+    {
+        // Do some stuff ...
+        
+        // (very often) go to another gamestate
+        // $this->gamestate->nextState( 'some_gamestate_transition' );
+    }
+
+    
+    	
 //////////////////////////////////////////////////////////////////////////////
 //////////// Zombie
 ////////////
@@ -315,7 +512,6 @@ class veggiegarden extends Table
                     $this->gamestate->nextState( "zombiePass" );
                 	break;
             }
-
             return;
         }
 
