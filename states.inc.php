@@ -76,10 +76,9 @@ $machinestates = array(
 	3 => array(
         "name" => "playerpick",  
         "type" => "activeplayer",
-        "description" => clienttranslate('${actplayer} has to pick a card from the table'),
-		"descriptionmyturn" => clienttranslate('${you} have to pick a card from the table'),
-		"action" => "stplayerpick",
-		
+        "description" => clienttranslate('${actplayer} has to pick a veggie from the harvest'),
+		"descriptionmyturn" => clienttranslate('${you} have to pick a veggie from the harvest'),
+		"action" => "stplayerpick",	
 		"possibleactions" => array( "pickcard" ),        
         "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "selectDestination" => 5 ) 
     ),
@@ -87,8 +86,8 @@ $machinestates = array(
 	4 => array(
         "name" => "selectTarget",  
         "type" => "activeplayer",
-        "description" => clienttranslate('${actplayer} has to select a card or token from the board'),
-		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the board'),
+        "description" => clienttranslate('${actplayer} has to select a card or token from the garden'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the garden'),
 		"action" => "stTarget",
 		"args" => "argPossibleTargets",
 		"possibleactions" => array( "selectTarget" ),
@@ -103,7 +102,7 @@ $machinestates = array(
 		"action" => "stDestination",
 		"args" => "argPossibleDestinations",
 		"possibleactions" => array( "selectTarget" ),
-        "transitions" => array( "selectDestination" => 5 ) 
+        "transitions" => array( "startTurn" => 2 ) 
     ),
 		
     90 => array(

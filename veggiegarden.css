@@ -22,15 +22,15 @@
     
     Usually, you are using CSS to:
     
-    1Â°) define the overall layout of your game
+    1) define the overall layout of your game
         (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
 
-    2Â°) create your CSS-sprites:
+    2) create your CSS-sprites:
         All images of your games should be gathered into a small number of image files. Then, using
         background-image and background-position CSS properties, you create HTML blocks that can 
         display these images correctly (see example below).
     
-    3Â°) ... anything else:
+    3) ... anything else:
         It is really easy to add and remove CSS classes dynamically from your Javascript with
         dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
         (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
@@ -49,6 +49,9 @@
     position: relative;
     height: 5%;
 }
+#game_play_area_wrap{
+pointer-events: none;
+}
 
 #playArea {
   width: 100%;
@@ -62,6 +65,7 @@
   flex-wrap: wrap;
   flex-direction: row;
   align-items: flex-start;
+  pointer-events: visible;
 }
 
 @media screen and (min-width: 1920px){
@@ -124,7 +128,53 @@
     display: inline-block;
     margin: 15px;
     /* flex: 0 1 auto; */
-    box-shadow: -1px 1px 0px 1px #ebd5bd, -3px 7px 0px 1px #dac6af, -5px 9px 0px 1px #cccccc, -9px 15px 0px 1px #ebd5bd, -11px 18px 0px 1px #d3d3d3, -14px 22px 0px 1px #ebd5bd, 3px 18px 3px 11px rgba(0, 0, 0, 0.58);
+    
+    margin-bottom: 30px;
+    transform:translateZ(33px);
+ }
+
+ #deck div:nth-child(1) {
+ 	transform:translate3d(1px,1px,-3px);
+ }                             
+#deck div:nth-child(2) {        
+ 	transform:translate3d(2px,2px,-6px);
+ }                             
+#deck div:nth-child(3) {        
+ 	transform:translate3d(3px,3px,-9px);
+ }                             
+#deck div:nth-child(4) {        
+ 	transform:translate3d(4px,4px,-12px);
+ }                             
+#deck div:nth-child(5) {        
+ 	transform:translate3d(5px,5px,-15px);
+ }                             
+#deck div:nth-child(6) {        
+ 	transform:translate3d(6px,6px,-18px);
+ }                             
+#deck div:nth-child(7) {        
+ 	transform:translate3d(7px,7px,-21px);
+ }                             
+#deck div:nth-child(8) {        
+ 	transform:translate3d(8px,8px,-24px);
+}                              
+#deck div:nth-child(9) {        
+ 	transform:translate3d(9px,9px,-27px);
+ 
+}
+#deck div:nth-child(10) {        
+ 	transform:translate3d(9px,9px,-30px);
+ 	box-shadow: 10px 20px 3px 11px rgba(0, 0, 0, 0.26);
+ }
+
+.card_back {
+    width: 140px;
+    height: 90px;
+    background-image: url('img/cardback.jpg');
+    border-radius: 7px;
+    background-size: cover;
+    display: inline-block;
+    position:absolute;
+    box-shadow: 1px 0px 2px 2px rgba(82, 82, 82, 0.26);
  }
 
 .boarddiv {
@@ -149,18 +199,21 @@
 
 #table{
 	min-width: 600px;
+	min-height: 110px;
 	/* flex: 1 1 auto; */
-	border-radius: 5px;
-	display: inline-flex;
-	min-height: 90px;
+	border-radius: 10px;
+	display:inline-block;
 }
+
 
 #table .card {
 	margin:5px;
+	position:relative !important;
 }
 
 #hand .card {
 	margin:5px;
+	position:relative !important;
 }
 
 .whiteblock {
@@ -170,9 +223,10 @@
 }
 
 #hand{
-	min-width: 600px;
-	min-height: 90px;
-	max-width: 1360px;
+	width: 750px;
+	margin: 40px;
+	min-height: 200px;
+	transform: rotatex(-15deg) translateZ(30px);
 	flex: 1 1 auto;
 	border-radius: 5px;
 }
@@ -182,9 +236,28 @@
     background-image: url('img/cards.jpg');
     border-radius: 7px;
     display: inline-block;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.22);
+    position: absolute;
+}
+
+
+.tooltipcard {
+    width: 180px;
+    height: 240px;
+    background-image: url('img/tooltips.jpg');
+    border-radius: 7px;
+    display: inline-block;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
 }
 
+.tooltiptext{
+	position:absolute;
+	margin-top: 190px;
+	margin-left: 23px;
+	width: 137px;
+	font-size: 12px;
+	font-weight: bold;
+}
 .token {
     width: 60px;
     height: 60px;
@@ -203,18 +276,36 @@
     background-color:white;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -180px;
+    background-repeat:no-repeat;
     margin-top: -4px;
     margin-left: -4px;
 }
 
-.field {    
+.groundhog {
+    width: 67px;
+    height: 67px;
+    background-image: url('img/tokens.png');
+    border-radius: 50%;
+    background-color:white;
+    background-repeat:no-repeat;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+    background-position: -235px;
+    margin-top: 10px;
+    margin-left: 3px;
+    position: absolute;
+    z-index: 300;
+}
+
+.field {
     width: 141px;
     height: 91px;
     border-radius: 7px;
     position: absolute;
-	border: DarkOliveGreen;
+    border: DarkOliveGreen;
     border-style: solid;
+    position: absolute;
     border-width: 1px;
+    display: inline-block;
 }
 
 .fence {

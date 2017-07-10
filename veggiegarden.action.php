@@ -53,7 +53,7 @@
         // Retrieve arguments
         // Note: these arguments correspond to what has been sent through the javascript "ajaxcall" method
         $arg1 = self::getArg( "myArgument1", AT_posint, true );
-        $arg2 = self::getArg( "myArgument2", AT_posint, true );
+        $arg2 = self::getArg( "myArgument2", AT_alphanum, true );
 
         // Then, call the appropriate method in your game logic, like "playCard" or "myAction"
         $this->game->myAction( $arg1, $arg2 );
@@ -68,6 +68,14 @@
 		self::setAjaxMode();
 		$card_id = self::getArg( "card_id", AT_posint, true );
 		$this->game->pickcard($card_id);
+		self::ajaxResponse();    
+	}
+	
+	public function selectTarget()
+    {
+		self::setAjaxMode();
+		$target = self::getArg( "target", AT_alphanum, true );
+		$this->game->selectTarget($target);
 		self::ajaxResponse();    
 	}
 

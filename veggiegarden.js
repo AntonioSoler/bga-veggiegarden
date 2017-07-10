@@ -25,10 +25,19 @@ function (dojo, declare) {
         constructor: function(){
             console.log('veggiegarden constructor');
               
-            // Here, you can init the global variables of your user interface
-            // Example:
-            // this.myGlobalValue = 0;
-
+            if (!dojo.hasClass("ebd-body", "mode_3d")) {
+            dojo.addClass("ebd-body", "mode_3d");
+            dojo.addClass("ebd-body", "enableTransitions");
+				$("globalaction_3d").innerHTML = "2D";   // controls the upper right button 
+				this.control3dxaxis = 30;  // rotation in degrees of x axis (it has a limit of 0 to 80 degrees in the frameword so users cannot turn it upsidedown)
+				this.control3dzaxis = 0;   // rotation in degrees of z axis
+				this.control3dxpos = -100;   // center of screen in pixels
+				this.control3dypos = 200;   // center of screen in pixels
+				this.control3dscale = 1;   // zoom level, 1 is default 2 is double normal size, 
+				this.control3dmode3d = true ;  			// is the 3d enabled	
+				 //transform: rotateX(30deg) translate(200px, -100px) rotateZ(0deg) scale3d(1, 1, 1); min-width: 0px;
+				$("game_play_area").style.transform = "rotatex(" + this.control3dxaxis + "deg) translate(" + this.control3dypos + "px," + this.control3dxpos + "px) rotateZ(" + this.control3dzaxis + "deg) scale3d(" + this.control3dscale + "," + this.control3dscale + "," + this.control3dscale + ")";
+			}
         },
         
         /*
@@ -66,6 +75,7 @@ function (dojo, declare) {
 				{
 					var card = this.gamedatas.table[i];
 					this.placecard('table',card['id'],card['type']);
+					this.addtooltipcard ( card['id'],card['type'] );
 				}
 			
 			for( var i in this.gamedatas.field )
@@ -79,13 +89,14 @@ function (dojo, declare) {
 					var card = this.gamedatas.hand[i];
 					this.placecard('hand',card['id'],card['type']);
 				}
-			
-			debugger;
+
 			for( var i in this.gamedatas.fence )
 				{
 					var card = this.gamedatas.fence[i];
 					this.placetoken('fence'+card['location_arg'],card['id'],card['type']);
 				}
+			
+			dojo.place( "<div id='groundhog' class='groundhog' ></div>" , "field"+this.gamedatas.groundhog, "last");
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -112,17 +123,33 @@ function (dojo, declare) {
 			    if (this.isCurrentPlayerActive() )
 				{
 					list =dojo.query( '#table .card' ).addClass( 'borderpulse' ) ;
-					//debugger;
+					
 					for (var i = 0; i < list.length; i++)
 					{
 						var thiselement = list[i];
 						this.gameconnections.push( dojo.connect(thiselement, 'onclick' , this, 'pickcard'))
 					}
-					dojo.style("table", "pointer", "");
+					
 				}
 				
 				break;
-           
+            case 'selectTarget':
+			    
+			    if (this.isCurrentPlayerActive() )
+				{
+					list = args.args.possiblemoves;
+					
+					
+					for (var i = 0; i < list.length; i++)
+					{
+						var thiselement = list[i];
+						thistarget=dojo.query("#"+thiselement+ " .card,#"+thiselement+".card ,#"+thiselement+">div" ).addClass( 'borderpulse' ) ;
+						this.gameconnections.push( dojo.connect(thistarget[0], 'onclick' , this, 'selectTarget'))
+					}
+					
+				}
+				
+				break;
            
             case 'dummmy':
                 break;
@@ -154,8 +181,16 @@ function (dojo, declare) {
 				{
 					dojo.forEach(this.gameconnections, dojo.disconnect);
 					dojo.query(".borderpulse").removeClass("borderpulse");
+					this.gameconnections=new Array();
 				}
-           
+            case 'selectTarget':
+			    
+			    if (this.isCurrentPlayerActive() )
+				{
+					dojo.forEach(this.gameconnections, dojo.disconnect);
+					dojo.query(".borderpulse").removeClass("borderpulse");
+					this.gameconnections=new Array();
+				}
             case 'dummmy':
                 break;
             }               
@@ -273,6 +308,36 @@ function (dojo, declare) {
 			dojo.place( "<div id='card_"+card_id+"' class='card' style='background-position:"+position+";'></div>" , destination, "last");			
 		},
 		
+		addtooltipcard: function ( card_id ,card_type )
+		{
+			xpos= -180*((card_type - 1 )%3 );
+			ypos= -240*(Math.floor( (card_type -1 ) / 3 ));
+			position= xpos+"px "+ ypos+"px ";
+			
+			switch(card_type){
+				case "1" :
+				 tooltiptext=_("Bunny hops to a fence post and exchanges places with it");
+				break;
+				case "2" :
+				 tooltiptext=_("Shift a row or column of veggies or fence posts (the groundhog blocks)");
+				break;
+				case "3" :
+				 tooltiptext=_("Move the groundhog, then swap any two veggies opposite the groundhog");
+				break;
+				case "4" :
+				 tooltiptext=_("Swap adjacent veggies of fence posts (the groundhog blocks)");
+				break;
+				case "5" :
+				 tooltiptext=_("Exchange a card from your hand with one in the garden");
+				break;
+				case "6" :
+				 tooltiptext=_("Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)");
+				break;
+				}
+			
+			this.addTooltipHtml("card_"+card_id, "<div id='tooltipcard_"+card_id+"' class='tooltipcard' style='background-position:"+position+";'><span class='tooltiptext'>"+tooltiptext+"</span></div>" );			
+		},
+		
 		placetoken: function ( destination, card_id ,card_type )
 		{
 			
@@ -319,16 +384,15 @@ function (dojo, declare) {
             // Get the cliqued pos and Player field ID
             var cardpicked = evt.currentTarget.id;
 			var card_id = cardpicked.split('_')[1];
-			debugger;			
+			
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
 			
 			
-			dojo.toggleClass(cardpicked,"tileselected");
-			dojo.style("table", "cursor", "");
+			dojo.toggleClass(cardpicked,"tileselected");  //TODO replace this with a notification
 			
-			dojo.forEach(this.gameconnections, dojo.disconnect);
+			dojo.forEach(this.gameconnections, dojo.disconnect); 
 			
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		
@@ -336,6 +400,37 @@ function (dojo, declare) {
             {            
                 this.ajaxcall( "/veggiegarden/veggiegarden/pickcard.html", {
                     card_id:card_id                    
+                }, this, function( result ) {} );
+            }            
+        },    
+		
+		selectTarget: function( evt )
+        {
+            // Stop this event propagation
+			
+            dojo.stopEvent( evt );
+			if( ! this.checkAction( 'selectTarget' ) )
+            {   return; }
+
+            // Get the cliqued pos and Player field ID
+            var target = evt.currentTarget.id;
+			
+			
+		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
+            this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
+			} ) ); */
+
+			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
+			
+			
+			dojo.forEach(this.gameconnections, dojo.disconnect);
+			
+			dojo.query(".borderpulse").removeClass("borderpulse");
+		
+            if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
+            {            
+                this.ajaxcall( "/veggiegarden/veggiegarden/selectTarget.html", {
+                    target:target
                 }, this, function( result ) {} );
             }            
         },    
