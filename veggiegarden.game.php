@@ -391,14 +391,14 @@ class veggiegarden extends Table
 				
 			  	for ($x=-1 ; $x<=1 ; $x+=2) 
 				{	
-					if ( ((&$Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
+					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 					{
 						array_push($result["possiblemoves"],"field".(($Xtarget+$x)*10+$Ytarget));
 					}	
 				}		
 				for ($y=-1 ; $y<=1 ; $y+=2) 
 				{	
-					if ( ((&$Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 )   ) 
+					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 )   ) 
 					{
 						array_push($result["possiblemoves"],"field".(($Xtarget)*10+$Ytarget+$y));
 					}	
@@ -415,7 +415,7 @@ class veggiegarden extends Table
 				{
 					for ($x=-1 ; $x<=1 ; $x+=2) 
 					{	
-						if ( ((&$Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
+						if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 						{
 							array_push($result["possiblemoves"],"fence".(($Xtarget+$x)*10+$Ytarget));
 						}	
@@ -425,7 +425,7 @@ class veggiegarden extends Table
 				{
 					for ($y=-1 ; $y<=1 ; $y+=2) 
 					{	
-						if ( ((&$Ytarget +$y) >= 1 ) AND ( ( $Ytarget + $y ) < 3 )   ) 
+						if ( (($Ytarget +$y) >= 1 ) AND ( ( $Ytarget + $y ) < 3 )   ) 
 						{
 							array_push($result["possiblemoves"],"fence".(($Xtarget)*10+$Ytarget+$y));
 						}	
