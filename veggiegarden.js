@@ -35,7 +35,7 @@ function (dojo, declare) {
 				this.control3dypos = 200;   // center of screen in pixels
 				this.control3dscale = 1.2;   // zoom level, 1 is default 2 is double normal size, 
 				this.control3dmode3d = true ;  			// is the 3d enabled	
-				
+				 
 				$("game_play_area").style.transform = "rotatex(" + this.control3dxaxis + "deg) translate(" + this.control3dypos + "px," + this.control3dxpos + "px) rotateZ(" + this.control3dzaxis + "deg) scale3d(" + this.control3dscale + "," + this.control3dscale + "," + this.control3dscale + ")";
 			}
         },
@@ -75,10 +75,7 @@ function (dojo, declare) {
 				{
 					var card = this.gamedatas.table[i];
 					this.placecard('table',card['id'],card['type']);
-<<<<<<< HEAD
 					this.addtooltipcard ( card['id'],card['type'] );
-=======
->>>>>>> origin/master
 				}
 			
 			for( var i in this.gamedatas.field )
@@ -92,22 +89,14 @@ function (dojo, declare) {
 					var card = this.gamedatas.hand[i];
 					this.placecard('hand',card['id'],card['type']);
 				}
-<<<<<<< HEAD
 
-=======
-			
-			debugger;
->>>>>>> origin/master
 			for( var i in this.gamedatas.fence )
 				{
 					var card = this.gamedatas.fence[i];
 					this.placetoken('fence'+card['location_arg'],card['id'],card['type']);
 				}
-<<<<<<< HEAD
 			
 			dojo.place( "<div id='groundhog' class='groundhog' ></div>" , "field"+this.gamedatas.groundhog, "last");
-=======
->>>>>>> origin/master
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -134,17 +123,12 @@ function (dojo, declare) {
 			    if (this.isCurrentPlayerActive() )
 				{
 					list =dojo.query( '#table .card' ).addClass( 'borderpulse' ) ;
-<<<<<<< HEAD
 					
-=======
-					//debugger;
->>>>>>> origin/master
 					for (var i = 0; i < list.length; i++)
 					{
 						var thiselement = list[i];
 						this.gameconnections.push( dojo.connect(thiselement, 'onclick' , this, 'pickcard'))
 					}
-<<<<<<< HEAD
 					
 				}
 				
@@ -166,13 +150,6 @@ function (dojo, declare) {
 				}
 				
 				break;
-=======
-					dojo.style("table", "pointer", "");
-				}
-				
-				break;
-           
->>>>>>> origin/master
            
             case 'dummmy':
                 break;
@@ -204,7 +181,6 @@ function (dojo, declare) {
 				{
 					dojo.forEach(this.gameconnections, dojo.disconnect);
 					dojo.query(".borderpulse").removeClass("borderpulse");
-<<<<<<< HEAD
 					this.gameconnections=new Array();
 				}
             case 'selectTarget':
@@ -215,10 +191,6 @@ function (dojo, declare) {
 					dojo.query(".borderpulse").removeClass("borderpulse");
 					this.gameconnections=new Array();
 				}
-=======
-				}
-           
->>>>>>> origin/master
             case 'dummmy':
                 break;
             }               
@@ -336,7 +308,6 @@ function (dojo, declare) {
 			dojo.place( "<div id='card_"+card_id+"' class='card' style='background-position:"+position+";'></div>" , destination, "last");			
 		},
 		
-<<<<<<< HEAD
 		addtooltipcard: function ( card_id ,card_type )
 		{
 			xpos= -180*((card_type - 1 )%3 );
@@ -367,8 +338,6 @@ function (dojo, declare) {
 			this.addTooltipHtml("card_"+card_id, "<div id='tooltipcard_"+card_id+"' class='tooltipcard' style='background-position:"+position+";'><span class='tooltiptext'>"+tooltiptext+"</span></div>" );			
 		},
 		
-=======
->>>>>>> origin/master
 		placetoken: function ( destination, card_id ,card_type )
 		{
 			
@@ -415,7 +384,6 @@ function (dojo, declare) {
             // Get the cliqued pos and Player field ID
             var cardpicked = evt.currentTarget.id;
 			var card_id = cardpicked.split('_')[1];
-<<<<<<< HEAD
 			
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
@@ -449,9 +417,6 @@ function (dojo, declare) {
             var cardpicked = evt.currentTarget.id;
 			var card_id = cardpicked.split('_')[1];
 			
-=======
-			debugger;			
->>>>>>> origin/master
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */

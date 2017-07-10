@@ -209,11 +209,7 @@ class veggiegarden extends Table
 		$result['table'] = $this->cards->getCardsInLocation( 'table' );
 		$result['field'] = $this->cards->getCardsInLocation( 'field' );
 		$result['fence'] = $this->tokens->getCardsInLocation( 'fence' );
-<<<<<<< HEAD
 		$result['groundhog'] = self::getGameStateValue('groundhog_pos');
-=======
-		$result['groundhog_pos'] = self::getGameStateValue('groundhog_pos');
->>>>>>> origin/master
 		
 		$result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
 		
@@ -328,7 +324,6 @@ class veggiegarden extends Table
     */
     
 	function argPossibleTargets()
-<<<<<<< HEAD
     {   
 		$player_id = self::getActivePlayerId();
         $cardpicked=self::getGameStateValue( 'card_picked');
@@ -353,36 +348,15 @@ class veggiegarden extends Table
 					if (( $Xgroundhog_pos != $x ) and ( $Ygroundhog_pos != $y ))
 					{ 
 						array_push($result["possiblemoves"],"field".($x*10+$y));
-=======
-    {
-        $cardpicked=self::getGameStateValue( 'card_picked');
-		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
-		$Xgroundhog_pos= $groundhog_pos % 10 ;
-		$Ygroundhog_pos= intdiv( $groundhog_pos , 10 ) ;
-		$card=$this->cards->getCard( $card_id );
-		$result=  array( 'possiblemoves' => array() );
-        switch ($card['type']){
-		case "1":   // CARROTS Move BUNNY
-		break;
-		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
-			for ($x=0 ; $x<= 3 $x++)
-			{
-				for ($y=0 ; $y<= 3 $y++)
-				{
-					if ( $Xgroundhog_pos != $x ) and ( $Ygroundhog_pos != $Y )
-					{ 
-						array_push($result['possiblemoves'],"field".($x*10+$Y));
->>>>>>> origin/master
 					}
 				}	
 			}
 			for ($x=0 ; $x<=3 ; $x++) 
 			{
-<<<<<<< HEAD
 				array_push($result["possiblemoves"],"fence".($x*10 ) );
 				array_push($result["possiblemoves"],"fence".($x*10+3) );
 			}
-			for ($y=1 ; $y<=2 ; $y++) 
+			for ($y=1 ; $y<=2 ; $y++)  
 			{
 				array_push($result["possiblemoves"],"fence".($y)  );
 				array_push($result["possiblemoves"],"fence".(30+$y) );
@@ -443,26 +417,6 @@ class veggiegarden extends Table
 						}	
 					}
 		break;
-=======
-				array_push($result['possiblemoves'],"fence".($x*10 ) );
-				array_push($result['possiblemoves'],"fence".($x*10+3) );
-			}
-			for ($y=1 ; $y<=2 ; $y++) 
-			{
-				array_push($result['possiblemoves'],"fence".($y)  );
-				array_push($result['possiblemoves'],"fence".(30+$y) );
-			}
-			break;
-		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
-		break;
-		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
-		break;
-		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
-		break;
-		case "6":     //TOMATO   Discard a card from the table and replace it with one from the table.
-		break;
-		
->>>>>>> origin/master
 		}
 	     
         // return values:
@@ -501,7 +455,6 @@ class veggiegarden extends Table
         
 		$this->gamestate->nextState( 'playerpick' );
     }
-<<<<<<< HEAD
 
 	function stplayerpick()
     {
@@ -535,41 +488,6 @@ class veggiegarden extends Table
         // $this->gamestate->nextState( 'some_gamestate_transition' );
     }
 
-=======
-
-	function stplayerpick()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
-    }
-	
-	function stTarget()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
-    }
-	
-	function stDestination()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
-    }
-
-	function stGameEndScoring()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
-    }
-
->>>>>>> origin/master
     
     	
 //////////////////////////////////////////////////////////////////////////////
