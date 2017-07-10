@@ -11,35 +11,7 @@
  *
  * veggiegarden stylesheet
  *
- */
-
-/*
-    This is the CSS stylesheet of your game User Interface.
-    
-    Styles defined on this file will be applied to the HTML elements you define in your
-    HTML template (veggiegarden_veggiegarden.tpl), and to HTML elements you create dynamically
-    (in veggiegarden.js).
-    
-    Usually, you are using CSS to:
-    
-    1) define the overall layout of your game
-        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
-
-    2) create your CSS-sprites:
-        All images of your games should be gathered into a small number of image files. Then, using
-        background-image and background-position CSS properties, you create HTML blocks that can 
-        display these images correctly (see example below).
-    
-    3) ... anything else:
-        It is really easy to add and remove CSS classes dynamically from your Javascript with
-        dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
-        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
-        very often, using CSS classes for the logic of your user interface allow you to do complex
-        thing easily.
-        
-        
-     Note: on the production platform, this file will be compressed and comments will be removed.
-           Consequently, don't hesitate to put as many comments as necessary.
+ 
 */
 
 @import url(../../../css/csslayer.css); /* Note: you must not use any @import directive other than this one */
@@ -128,6 +100,10 @@ pointer-events: none;
     display: inline-block;
     margin: 15px;
     /* flex: 0 1 auto; */
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/master
     
     margin-bottom: 30px;
     transform:translateZ(33px);
@@ -159,10 +135,13 @@ pointer-events: none;
 }                              
 #deck div:nth-child(9) {        
  	transform:translate3d(9px,9px,-27px);
+<<<<<<< HEAD
  
 }
 #deck div:nth-child(10) {        
  	transform:translate3d(9px,9px,-30px);
+=======
+>>>>>>> origin/master
  	box-shadow: 10px 20px 3px 11px rgba(0, 0, 0, 0.26);
  }
 
@@ -175,6 +154,12 @@ pointer-events: none;
     display: inline-block;
     position:absolute;
     box-shadow: 1px 0px 2px 2px rgba(82, 82, 82, 0.26);
+<<<<<<< HEAD
+=======
+=======
+    box-shadow: -1px 1px 0px 1px #ebd5bd, -3px 7px 0px 1px #dac6af, -5px 9px 0px 1px #cccccc, -9px 15px 0px 1px #ebd5bd, -11px 18px 0px 1px #d3d3d3, -14px 22px 0px 1px #ebd5bd, 3px 18px 3px 11px rgba(0, 0, 0, 0.58);
+>>>>>>> origin/master
+>>>>>>> origin/master
  }
 
 .boarddiv {
@@ -199,6 +184,10 @@ pointer-events: none;
 
 #table{
 	min-width: 600px;
+<<<<<<< HEAD
+	min-height: 110px;
+=======
+<<<<<<< HEAD
 	min-height: 110px;
 	/* flex: 1 1 auto; */
 	border-radius: 10px;
@@ -209,11 +198,33 @@ pointer-events: none;
 #table .card {
 	margin:5px;
 	position:relative !important;
+=======
+>>>>>>> origin/master
+	/* flex: 1 1 auto; */
+	border-radius: 10px;
+	display:inline-block;
+}
+
+
+#table .card {
+	margin:5px;
+<<<<<<< HEAD
+	position:relative !important;
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
 }
 
 #hand .card {
 	margin:5px;
+<<<<<<< HEAD
 	position:relative !important;
+=======
+<<<<<<< HEAD
+	position:relative !important;
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
 }
 
 .whiteblock {
@@ -223,10 +234,22 @@ pointer-events: none;
 }
 
 #hand{
+<<<<<<< HEAD
 	width: 750px;
 	margin: 40px;
 	min-height: 200px;
 	transform: rotatex(-15deg) translateZ(30px);
+=======
+<<<<<<< HEAD
+	width: 790px;
+	min-height: 210px;
+	transform: rotatex(-12deg) translateZ(12px);
+=======
+	min-width: 600px;
+	min-height: 90px;
+	max-width: 1360px;
+>>>>>>> origin/master
+>>>>>>> origin/master
 	flex: 1 1 auto;
 	border-radius: 5px;
 }
@@ -236,6 +259,10 @@ pointer-events: none;
     background-image: url('img/cards.jpg');
     border-radius: 7px;
     display: inline-block;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/master
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.22);
     position: absolute;
 }
@@ -258,6 +285,14 @@ pointer-events: none;
 	font-size: 12px;
 	font-weight: bold;
 }
+<<<<<<< HEAD
+=======
+=======
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+}
+
+>>>>>>> origin/master
+>>>>>>> origin/master
 .token {
     width: 60px;
     height: 60px;
@@ -276,11 +311,22 @@ pointer-events: none;
     background-color:white;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -180px;
+<<<<<<< HEAD
     background-repeat:no-repeat;
+=======
+<<<<<<< HEAD
+    background-repeat:no-repeat;
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
     margin-top: -4px;
     margin-left: -4px;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/master
 .groundhog {
     width: 67px;
     height: 67px;
@@ -297,15 +343,36 @@ pointer-events: none;
 }
 
 .field {
+<<<<<<< HEAD
+=======
+=======
+.field {    
+>>>>>>> origin/master
+>>>>>>> origin/master
     width: 141px;
     height: 91px;
     border-radius: 7px;
     position: absolute;
+<<<<<<< HEAD
+    border: DarkOliveGreen;
+=======
+<<<<<<< HEAD
     border: DarkOliveGreen;
     border-style: solid;
     position: absolute;
     border-width: 1px;
     display: inline-block;
+=======
+	border: DarkOliveGreen;
+>>>>>>> origin/master
+    border-style: solid;
+    position: absolute;
+    border-width: 1px;
+<<<<<<< HEAD
+    display: inline-block;
+=======
+>>>>>>> origin/master
+>>>>>>> origin/master
 }
 
 .fence {

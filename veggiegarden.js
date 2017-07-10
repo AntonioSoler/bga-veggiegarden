@@ -36,6 +36,7 @@ function (dojo, declare) {
 				this.control3dscale = 1;   // zoom level, 1 is default 2 is double normal size, 
 				this.control3dmode3d = true ;  			// is the 3d enabled	
 				 //transform: rotateX(30deg) translate(200px, -100px) rotateZ(0deg) scale3d(1, 1, 1); min-width: 0px;
+
 				$("game_play_area").style.transform = "rotatex(" + this.control3dxaxis + "deg) translate(" + this.control3dypos + "px," + this.control3dxpos + "px) rotateZ(" + this.control3dzaxis + "deg) scale3d(" + this.control3dscale + "," + this.control3dscale + "," + this.control3dscale + ")";
 			}
         },
@@ -390,9 +391,10 @@ function (dojo, declare) {
 			} ) ); */
 			
 			
-			dojo.toggleClass(cardpicked,"tileselected");  //TODO replace this with a notification
+			dojo.toggleClass(cardpicked,"tileselected");
+
 			
-			dojo.forEach(this.gameconnections, dojo.disconnect); 
+			dojo.forEach(this.gameconnections, dojo.disconnect);
 			
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		
@@ -403,6 +405,8 @@ function (dojo, declare) {
                 }, this, function( result ) {} );
             }            
         },    
+		
+ 
 		
 		selectTarget: function( evt )
         {

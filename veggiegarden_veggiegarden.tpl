@@ -33,6 +33,7 @@
 	<div id="playArea">
 		<div id="table_wrap">
 
+
 			<div id="deck">
 				<div class="card_back"></div>
 				<div class="card_back"></div>
@@ -44,7 +45,9 @@
 				<div class="card_back"></div>
 				<div class="card_back"></div>
 				<div class="card_back"></div>
+				<div class="card_back"></div>
 			</div>
+
 			<div id="table" class="whiteblock table"></div>
 		</div>
 		<div id="boardwrapper">
