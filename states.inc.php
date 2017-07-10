@@ -76,8 +76,13 @@ $machinestates = array(
 	3 => array(
         "name" => "playerpick",  
         "type" => "activeplayer",
+<<<<<<< HEAD
         "description" => clienttranslate('${actplayer} has to pick a veggie from the harvest'),
 		"descriptionmyturn" => clienttranslate('${you} have to pick a veggie from the harvest'),
+=======
+        "description" => clienttranslate('${actplayer} has to pick a card from the table'),
+		"descriptionmyturn" => clienttranslate('${you} have to pick a card from the table'),
+>>>>>>> origin/master
 		"action" => "stplayerpick",
 		
 		"possibleactions" => array( "pickcard" ),        
@@ -87,8 +92,13 @@ $machinestates = array(
 	4 => array(
         "name" => "selectTarget",  
         "type" => "activeplayer",
+<<<<<<< HEAD
         "description" => clienttranslate('${actplayer} has to select a card or token from the garden'),
 		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the garden'),
+=======
+        "description" => clienttranslate('${actplayer} has to select a card or token from the board'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a card or token from the board'),
+>>>>>>> origin/master
 		"action" => "stTarget",
 		"args" => "argPossibleTargets",
 		"possibleactions" => array( "selectTarget" ),

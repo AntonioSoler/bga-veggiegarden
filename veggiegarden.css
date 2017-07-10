@@ -22,15 +22,26 @@
     
     Usually, you are using CSS to:
     
+<<<<<<< HEAD
     1) define the overall layout of your game
         (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
 
     2) create your CSS-sprites:
+=======
+    1Â°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+
+    2Â°) create your CSS-sprites:
+>>>>>>> origin/master
         All images of your games should be gathered into a small number of image files. Then, using
         background-image and background-position CSS properties, you create HTML blocks that can 
         display these images correctly (see example below).
     
+<<<<<<< HEAD
     3) ... anything else:
+=======
+    3Â°) ... anything else:
+>>>>>>> origin/master
         It is really easy to add and remove CSS classes dynamically from your Javascript with
         dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
         (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
@@ -124,6 +135,7 @@
     display: inline-block;
     margin: 15px;
     /* flex: 0 1 auto; */
+<<<<<<< HEAD
     
     margin-bottom: 30px;
     transform:translateZ(33px);
@@ -167,6 +179,9 @@
     display: inline-block;
     position:absolute;
     box-shadow: 1px 0px 2px 2px rgba(82, 82, 82, 0.26);
+=======
+    box-shadow: -1px 1px 0px 1px #ebd5bd, -3px 7px 0px 1px #dac6af, -5px 9px 0px 1px #cccccc, -9px 15px 0px 1px #ebd5bd, -11px 18px 0px 1px #d3d3d3, -14px 22px 0px 1px #ebd5bd, 3px 18px 3px 11px rgba(0, 0, 0, 0.58);
+>>>>>>> origin/master
  }
 
 .boarddiv {
@@ -191,6 +206,7 @@
 
 #table{
 	min-width: 600px;
+<<<<<<< HEAD
 	min-height: 110px;
 	/* flex: 1 1 auto; */
 	border-radius: 10px;
@@ -201,11 +217,24 @@
 #table .card {
 	margin:5px;
 	position:relative !important;
+=======
+	/* flex: 1 1 auto; */
+	border-radius: 5px;
+	display: inline-flex;
+	min-height: 90px;
+}
+
+#table .card {
+	margin:5px;
+>>>>>>> origin/master
 }
 
 #hand .card {
 	margin:5px;
+<<<<<<< HEAD
 	position:relative !important;
+=======
+>>>>>>> origin/master
 }
 
 .whiteblock {
@@ -215,9 +244,15 @@
 }
 
 #hand{
+<<<<<<< HEAD
 	width: 790px;
 	min-height: 210px;
 	transform: rotatex(-12deg) translateZ(12px);
+=======
+	min-width: 600px;
+	min-height: 90px;
+	max-width: 1360px;
+>>>>>>> origin/master
 	flex: 1 1 auto;
 	border-radius: 5px;
 }
@@ -227,6 +262,7 @@
     background-image: url('img/cards.jpg');
     border-radius: 7px;
     display: inline-block;
+<<<<<<< HEAD
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.22);
     position: absolute;
 }
@@ -249,6 +285,11 @@
 	font-size: 12px;
 	font-weight: bold;
 }
+=======
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+}
+
+>>>>>>> origin/master
 .token {
     width: 60px;
     height: 60px;
@@ -267,11 +308,15 @@
     background-color:white;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -180px;
+<<<<<<< HEAD
     background-repeat:no-repeat;
+=======
+>>>>>>> origin/master
     margin-top: -4px;
     margin-left: -4px;
 }
 
+<<<<<<< HEAD
 .groundhog {
     width: 67px;
     height: 67px;
@@ -288,15 +333,24 @@
 }
 
 .field {
+=======
+.field {    
+>>>>>>> origin/master
     width: 141px;
     height: 91px;
     border-radius: 7px;
     position: absolute;
+<<<<<<< HEAD
     border: DarkOliveGreen;
     border-style: solid;
     position: absolute;
     border-width: 1px;
     display: inline-block;
+=======
+	border: DarkOliveGreen;
+    border-style: solid;
+    border-width: 1px;
+>>>>>>> origin/master
 }
 
 .fence {

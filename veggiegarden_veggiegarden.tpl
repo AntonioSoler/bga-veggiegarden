@@ -32,6 +32,7 @@
 <div id="playareascaler">
 	<div id="playArea">
 		<div id="table_wrap">
+<<<<<<< HEAD
 			<div id="deck">
 			<div class="card_back"></div>
 			<div class="card_back"></div>
@@ -43,6 +44,9 @@
 			<div class="card_back"></div>
 			<div class="card_back"></div>
 			</div>
+=======
+			<div id="deck"></div>
+>>>>>>> origin/master
 			<div id="table" class="whiteblock table"></div>
 		</div>
 		<div id="boardwrapper">
