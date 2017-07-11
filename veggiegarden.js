@@ -115,7 +115,7 @@ function (dojo, declare) {
         onEnteringState: function( stateName, args )
         {
             console.log( 'Entering state: '+stateName );
-            
+            debugger;
             switch( stateName )
             {
             
@@ -151,7 +151,24 @@ function (dojo, declare) {
 				}
 				
 				break;
-           
+            case 'selectDestination':
+			    
+			    if (this.isCurrentPlayerActive() )
+				{
+					list = args.args.possibledestinations;
+					
+					
+					for (var i = 0; i < list.length; i++)
+					{
+						var thiselement = list[i];
+						thistarget=dojo.query("#"+thiselement+ " .card,#"+thiselement+".card ,#"+thiselement+">div" ).addClass( 'borderpulse' ) ;
+						this.gameconnections.push( dojo.connect(thistarget[0], 'onclick' , this, 'selectDestination'))
+					}
+					
+				}
+				
+				break;
+				
             case 'dummmy':
                 break;
             }
@@ -268,9 +285,13 @@ function (dojo, declare) {
          */
         slideToObjectRelative : function(token, finalPlace, tlen, tdelay, onEnd) {
             this.resetPosition(token);
-
+            dojo.removeClass( token , "traveller");
+            dojo.addClass( token , "traveller");
+			
             var box = this.attachToNewParentNoDestroy(token, finalPlace);
-            var anim = this.slideToObjectPos(token, finalPlace, box.l, box.t, tlen, tdelay);
+			var anim = this.MySlideToObjectPos(token, finalPlace, box.l, box.t, tlen, tdelay);
+			
+			
 
             dojo.connect(anim, "onEnd", dojo.hitch(this, function(token) {
                 this.stripPosition(token);
@@ -279,6 +300,112 @@ function (dojo, declare) {
 
             anim.play();
         },
+		
+		MySlideToObjectPos: function (token, finalPlace, leftpos, rightpos, tlen, tdelay)
+		{
+			if (token === null)
+			{
+				console.error("slideToObjectPos: mobile obj is null");
+			}
+			if (finalPlace === null)
+			{
+				console.error("slideToObjectPos: target obj is null");
+			}
+			if (leftpos === null)
+			{
+				console.error("slideToObjectPos: target x is null");
+			}
+			if (rightpos === null)
+			{
+				console.error("slideToObjectPos: target y is null");
+			}
+			var tgt = dojo.position(finalPlace);
+			var src = dojo.position(token);
+			if (typeof tlen == "undefined")
+			{
+				tlen = 500;
+			}
+			if (typeof tdelay == "undefined")
+			{
+				tdelay = 0;
+			}
+			if (this.instantaneousMode)
+			{
+				tdelay = Math.min(1, tdelay);
+				tlen = Math.min(1, tlen);
+			}
+			var left = dojo.style(token, "left");
+			var top = dojo.style(token, "top");
+			left = left + tgt.x - src.x + leftpos;
+			top = top + tgt.y - src.y + rightpos;
+			return dojo.fx.slideTo(
+			{
+				node: token,
+				top: top,
+				left: left,
+				delay: tdelay,
+				duration: tlen,
+				unit: "px"
+			}
+			);
+		},
+		
+		MySlideToObject: function (_a37, _a38, _a39, _a3a)
+		{
+			if (_a37 === null)
+			{
+				console.error("slideToObject: mobile obj is null");
+			}
+			if (_a38 === null)
+			{
+				console.error("slideToObject: target obj is null");
+			}
+			var tgt = dojo.position(_a38);
+			var src = dojo.position(_a37);
+			if (typeof _a39 == "undefined")
+			{
+				_a39 = 500;
+			}
+			if (typeof _a3a == "undefined")
+			{
+				_a3a = 0;
+			}
+			if (this.instantaneousMode)
+			{
+				_a3a = Math.min(1, _a3a);
+				_a39 = Math.min(1, _a39);
+			}
+			var left = dojo.style(_a37, "left");
+			var top = dojo.style(_a37, "top");
+			left = left + tgt.x - src.x + (tgt.w - src.w) / 2;
+			top = top + tgt.y - src.y + (tgt.h - src.h) / 2;
+			return dojo.fx.slideTo(
+			{
+				node: _a37,
+				top: top,
+				left: left,
+				delay: _a3a,
+				duration: _a39,
+				unit: "px"
+			}
+			);
+		},
+		MySlideTemporaryObject: function (_a47, _a48, from, to, _a49, _a4a)
+					{
+						var obj = dojo.place(_a47, _a48);
+						dojo.style(obj, "position", "absolute");
+						dojo.style(obj, "left", "0px");
+						dojo.style(obj, "top", "0px");
+						this.placeOnObject(obj, from);
+						var anim = this.MySlideToObject(obj, to, _a49, _a4a);
+						var _a4b = function (node)
+						{
+							dojo.destroy(node);
+						};
+						dojo.connect(anim, "onEnd", _a4b);
+						anim.play();
+						return anim;
+					},
 		
 		stripPosition : function(token) {
             // console.log(token + " STRIPPING");
@@ -297,6 +424,7 @@ function (dojo, declare) {
             dojo.style(token, "left", "0px");
             dojo.style(token, "position", null);
         },
+		////////////////////////////////////////////////
 		
 		placecard: function ( destination, card_id ,card_type )
 		{
@@ -391,7 +519,7 @@ function (dojo, declare) {
 			} ) ); */
 			
 			
-			dojo.toggleClass(cardpicked,"tileselected");
+			
 
 			
 			dojo.forEach(this.gameconnections, dojo.disconnect);
@@ -406,8 +534,6 @@ function (dojo, declare) {
             }            
         },    
 		
- 
-		
 		selectTarget: function( evt )
         {
             // Stop this event propagation
@@ -417,8 +543,8 @@ function (dojo, declare) {
             {   return; }
 
             // Get the cliqued pos and Player field ID
-            var target = evt.currentTarget.id;
-			
+            var target = evt.target || evt.srcElement;
+			target=target.id;
 			
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
@@ -434,6 +560,37 @@ function (dojo, declare) {
             if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
             {            
                 this.ajaxcall( "/veggiegarden/veggiegarden/selectTarget.html", {
+                    target:target
+                }, this, function( result ) {} );
+            }            
+        },    
+		
+		selectDestination: function( evt )
+        {
+            // Stop this event propagation
+			
+            dojo.stopEvent( evt );
+			if( ! this.checkAction( 'selectDestination' ) )
+            {   return; }
+
+            // Get the cliqued pos and Player field ID
+            var target =  evt.target || evt.srcElement;
+			target=target.id;
+			
+		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
+            this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
+			} ) ); */
+
+			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
+			
+			
+			dojo.forEach(this.gameconnections, dojo.disconnect);
+			
+			dojo.query(".borderpulse").removeClass("borderpulse");
+		
+            if( this.checkAction( 'selectDestination' ) )    // Check that this action is possible at this moment
+            {            
+                this.ajaxcall( "/veggiegarden/veggiegarden/selectDestination.html", {
                     target:target
                 }, this, function( result ) {} );
             }            

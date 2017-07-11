@@ -319,15 +319,8 @@ class veggiegarden extends Table
 				self::setGameStateValue( 'card_target', $card_id );
 				self::setGameStateValue( 'token_target', 0 );
 				break;
-			case "field":
-				$sql = "select card_id from cards where card_location='field' and card_location_arg=".substr( $target, 5, 2 );
-				$card_id=self::getUniqueValueFromDB( $sql );  //  card_id
-				self::setGameStateValue( 'card_target', $card_id );
-				self::setGameStateValue( 'token_target', 0 );
-			break;
-			case "fence":
-				$sql = "select card_id from tokens where card_location='fence' and card_location_arg=".substr( $target, 5, 2 );
-				$card_id=self::getUniqueValueFromDB( $sql );  //  card_id
+			case "token":
+				$card_id = $targettype=substr( $target, 6, 2 ) ; //  token_id
 				self::setGameStateValue( 'card_target', 0 );
 				self::setGameStateValue( 'token_target', $card_id );
 			break;
@@ -340,6 +333,16 @@ class veggiegarden extends Table
 							) );	
 			
 	$this->gamestate->nextState( 'selectDestination' );
+    }
+	
+	function selectDestination( $target)
+    {
+		self::checkAction( 'selectDestination' );
+		$player_id = self::getActivePlayerId();
+		$targettype=substr( $target, 0, 5 ) ; //  card_ field fence
+		
+			
+	//$this->gamestate->nextState( 'selectDestination' );
     }
 	
 	
@@ -379,7 +382,7 @@ class veggiegarden extends Table
 			$notbunnypos=self::getObjectListFromDB( $sql );
 			foreach( $notbunnypos as $thispos => $notbunnypos )
 			{
-				array_push($result["possibledestinations"],"fence".$thispos);
+				array_push($result["possibledestinations"],"fence".$notbunnypos[$thispos]);
 			}
 		break;
 		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
@@ -393,14 +396,14 @@ class veggiegarden extends Table
 				{	
 					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 					{
-						array_push($result["possiblemoves"],"field".(($Xtarget+$x)*10+$Ytarget));
+						array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget));
 					}	
 				}		
 				for ($y=-1 ; $y<=1 ; $y+=2) 
 				{	
 					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 )   ) 
 					{
-						array_push($result["possiblemoves"],"field".(($Xtarget)*10+$Ytarget+$y));
+						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
 					}	
 				}		
 			}
@@ -417,7 +420,7 @@ class veggiegarden extends Table
 					{	
 						if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 						{
-							array_push($result["possiblemoves"],"fence".(($Xtarget+$x)*10+$Ytarget));
+							array_push($result["possibledestinations"],"fence".(($Xtarget+$x)*10+$Ytarget));
 						}	
 					}		
 				}
@@ -427,65 +430,100 @@ class veggiegarden extends Table
 					{	
 						if ( (($Ytarget +$y) >= 1 ) AND ( ( $Ytarget + $y ) < 3 )   ) 
 						{
-							array_push($result["possiblemoves"],"fence".(($Xtarget)*10+$Ytarget+$y));
+							array_push($result["possibledestinations"],"fence".(($Xtarget)*10+$Ytarget+$y));
 						}	
 					}		
 				}
 			}
 			break;
 		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
-			for ($x=1 ; $x<= 2; $x++)
-				{
-					for ($y=1 ; $y<= 2 ;$y++)
+			$target=$this->cards->getCard( $cardtarget );
+				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
+				$Ytarget = $target['location_arg'] % 10 ;	
+				
+			  	for ($x=-1 ; $x<=1 ; $x+=2) 
+				{	
+					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget))) 
 					{
-						if ( $groundhog_pos != ($x*10 + $y ))
-						{ 
-							array_push($result["possiblemoves"],"field".($x*10+$y));
-						}
+						array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget));
+					}	
+				}		
+				for ($y=-1 ; $y<=1 ; $y+=2) 
+				{	
+					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND ( $groundhog_pos != (($Xtarget)*10+$Ytarget+$y))) 
+					{
+						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
 					}	
 				}
-			break;
 		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
+			if ($cardtarget >= 1 )
+			{
+				$target=$this->cards->getCard( $cardtarget );
+				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
+				$Ytarget = $target['location_arg'] % 10 ;	
+				
+			  	for ($x=-1 ; $x<=1 ; $x+=2) 
+				{	
+					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ($groundhog_pos != (($Xtarget+$x)*10+$Ytarget)) ) 
+					{
+						array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget));
+					}	
+				}		
+				for ($y=-1 ; $y<=1 ; $y+=2) 
+				{	
+					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND ($groundhog_pos != (($Xtarget)*10+$Ytarget+$y))) 
+					{
+						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
+					}	
+				}		
+			}
+			if ($tokentarget >= 1 )	
+			{
+				$target=$this->tokens->getCard( $tokentarget );
+				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
+				$Ytarget = $target['location_arg'] % 10 ;	
+				
+				if ( $Ytarget == 0 OR $Ytarget == 3)
+				{
+					for ($x=-1 ; $x<=1 ; $x+=2) 
+					{	
+						if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
+						{
+							array_push($result["possibledestinations"],"fence".(($Xtarget+$x)*10+$Ytarget));
+						}	
+					}		
+				}
+				if ( $Ytarget == 1 OR $Ytarget == 2)
+				{
+					for ($y=-1 ; $y<=1 ; $y+=2) 
+					{	
+						if ( (($Ytarget +$y) >= 1 ) AND ( ( $Ytarget + $y ) < 3 )   ) 
+						{
+							array_push($result["possibledestinations"],"fence".(($Xtarget)*10+$Ytarget+$y));
+						}	
+					}		
+				}
+			}
+			break;
+		break;
+		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
 			for ($x=0 ; $x<= 3 ;$x++)
 				{
 					for ($y=0 ; $y<= 3; $y++)
 					{
 						if ( $groundhog_pos != ($x*10 + $y ))
 						{ 
-							array_push($result["possiblemoves"],"field".($x*10+$y));
+							array_push($result["possibledestinations"],"field".($x*10+$y));
 						}
 					}	
 				}
-			for ($x=0 ; $x<=3 ; $x++) 
-				{
-					array_push($result["possiblemoves"],"fence".($x*10 ) );
-					array_push($result["possiblemoves"],"fence".($x*10+3) );
-				}
-			for ($y=1 ; $y<=2 ; $y++) 
-				{
-					array_push($result["possiblemoves"],"fence".($y)  );
-					array_push($result["possiblemoves"],"fence".(30+$y) );
-				}
-			
-			break;
 		break;
-		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
-			$hand = $this->cards->getCardsInLocation( 'hand', $player_id );
-		    foreach( $hand as $thiscard => $hand )
-			{
-				array_push($result["possiblemoves"],"card_".$thiscard);
-			}
-		break;
-		case "6":     //TOMATO   Discard a card from the table and replace it with one from the table.(the groundhog blocks one card)
-					for ($x=0 ; $x<= 3 ;$x++)
+		case "6":     //TOMATO Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)
+					$sql = "select card_id from cards where card_location='table' and card_id<>".$card['id'];
+					$cardsintable=self::getObjectListFromDB( $sql );
+					foreach( $cardsintable as $thiscard => $cardsintable )
 					{
-						for ($y=0 ; $y<= 3 ;$y++)
-						{
-							if ( $groundhog_pos !=( $x*10 + $y ))
-							{ 
-								array_push($result["possiblemoves"],"field".($x*10+$y));
-							}
-						}	
+						array_push($result["possibledestinations"],"card_".$cardsintable[$thiscard]);
 					}
 		break;
 		}
@@ -621,9 +659,9 @@ class veggiegarden extends Table
 	
     function ststartTurn()
     {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
+        self::setGameStateValue( 'card_picked', 0 );	
+		self::setGameStateValue( 'card_target', 0 );	
+		self::setGameStateValue( 'token_target', 0 );
         
 		$this->gamestate->nextState( 'playerpick' );
     }

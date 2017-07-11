@@ -193,7 +193,7 @@
 }
 
 #table{
-	min-width: 600px;
+	min-width: 610px;
 	min-height: 110px;
 	/* flex: 1 1 auto; */
 	border-radius: 10px;
@@ -438,6 +438,10 @@
 .borderpulse {
     cursor: pointer;
     animation: pulse 2s ease infinite;
+	-webkit-animation: pulse 2s ease infinite;
+    -moz-animation: pulse 2s ease infinite;
+    -o-animation: pulse 2s ease infinite;
+    animation: pulse 2s ease infinite;
     z-index: 200 !important;
 }
 
@@ -453,9 +457,79 @@
   }
 }
 
+@-webkit-keyframes pulse {
+  0% {
+  box-shadow: 
+	    0 0 0 5px #c0dd00;
+  }
+
+  100% {
+  box-shadow: 
+	    0 0 0 1px #c0dd00;
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+  box-shadow: 
+	    0 0 0 5px #c0dd00;
+  }
+
+  100% {
+  box-shadow: 
+	    0 0 0 1px #c0dd00;
+  }
+}
+
+@-o-keyframes pulse {
+  0% {
+  box-shadow: 
+	    0 0 0 5px #c0dd00;
+  }
+
+  100% {
+  box-shadow: 
+	    0 0 0 1px #c0dd00;
+  }
+}
+
+
+
 .tileselected {
 border: 2px red solid !important;
 }
+
+.traveller {
+    -webkit-animation: travelanim 1.5s ease 1;
+    -moz-animation: travelanim 1.5s ease 1;
+    -o-animation: travelanim 1.5s ease 1;
+    animation: travelanim 1.5s ease 1
+}
+
+@keyframes "travelanim" {
+    50% {
+        transform: translateZ(250px);
+    }
+}
+
+@-webkit-keyframes "travelanim" {
+    50% {
+        transform: translateZ(250px);
+    }
+}
+
+@-moz-keyframes "travelanim" {
+    50% {
+        transform: translateZ(250px);
+    }
+}
+
+@-o-keyframes travelanim {
+    50% {
+        transform: translateZ(250px)
+    }
+}
+
 
 /*
     Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):

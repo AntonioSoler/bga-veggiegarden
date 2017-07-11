@@ -78,6 +78,14 @@
 		$this->game->selectTarget($target);
 		self::ajaxResponse();    
 	}
+	
+	public function selectDestination()
+    {
+		self::setAjaxMode();
+		$target = self::getArg( "target", AT_alphanum, true );
+		$this->game->selectDestination($target);
+		self::ajaxResponse();    
+	}
 
   }
   
