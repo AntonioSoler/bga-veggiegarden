@@ -31,7 +31,11 @@
 -->
 <div id="playareascaler">
 	<div id="playArea">
+<<<<<<< HEAD
+		
+=======
 		<div id="table_wrap">
+>>>>>>> origin/master
 
 
 			<div id="deck">
@@ -49,8 +53,8 @@
 			</div>
 
 			<div id="table" class="whiteblock table"></div>
-		</div>
-		<div id="boardwrapper">
+		
+		
 			<div id="boardPanel" class="boarddiv">
 				<div id="field0" class="field"></div>
 				<div id="field1" class="field"></div>
@@ -82,10 +86,10 @@
 				<div id="fence32" class="fence"></div>
 				
 			</div>
-		</div>
-		<div id="hand_wrap">
-			<div id="hand" class="whiteblock table"></div>
-		</div>
+		
+		
+		<div id="hand" class="whiteblock table"></div>
+		
 	</div>
 </div>
 <script type="text/javascript">

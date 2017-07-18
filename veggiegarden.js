@@ -58,7 +58,7 @@ function (dojo, declare) {
         {
             console.log( "Starting game setup" );
             this.gameconnections=new Array();
-			
+			this.param=new Array();
 			
             // Setting up player boards
             for( var player_id in gamedatas.players )
@@ -75,20 +75,20 @@ function (dojo, declare) {
 			for( var i in this.gamedatas.table )
 				{
 					var card = this.gamedatas.table[i];
-					this.placecard('table',card['id'],card['type']);
+					this.placecard('table',card['id'],card['type'] ,'deck');
 					this.addtooltipcard ( card['id'],card['type'] );
 				}
 			
 			for( var i in this.gamedatas.field )
 				{
 					var card = this.gamedatas.field[i];
-					this.placecard('field'+card['location_arg'] ,card['id'],card['type']);
+					this.placecard('field'+card['location_arg'] ,card['id'],card['type'],'deck');
 				}
 			
 			for( var i in this.gamedatas.hand )
 				{
 					var card = this.gamedatas.hand[i];
-					this.placecard('hand',card['id'],card['type']);
+					this.placecard('hand',card['id'],card['type'],'deck');
 				}
 
 			for( var i in this.gamedatas.fence )
@@ -97,7 +97,10 @@ function (dojo, declare) {
 					this.placetoken('fence'+card['location_arg'],card['id'],card['type']);
 				}
 			
-			dojo.place( "<div id='groundhog' class='groundhog' ></div>" , "field"+this.gamedatas.groundhog, "last");
+			if (this.gamedatas.groundhog >0 )
+			{
+				dojo.place( "<div id='groundhog' class='groundhog' ></div>" , "field"+this.gamedatas.groundhog, "last");
+			}
  
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
@@ -115,10 +118,16 @@ function (dojo, declare) {
         onEnteringState: function( stateName, args )
         {
             console.log( 'Entering state: '+stateName );
+<<<<<<< HEAD
+           
+=======
             debugger;
+>>>>>>> origin/master
             switch( stateName )
             {
-            
+            case 'startTurn':
+			    
+				break
             case 'playerpick':
 			    
 			    if (this.isCurrentPlayerActive() )
@@ -201,6 +210,7 @@ function (dojo, declare) {
 					dojo.query(".borderpulse").removeClass("borderpulse");
 					this.gameconnections=new Array();
 				}
+				break;
             case 'selectTarget':
 			    
 			    if (this.isCurrentPlayerActive() )
@@ -209,6 +219,16 @@ function (dojo, declare) {
 					dojo.query(".borderpulse").removeClass("borderpulse");
 					this.gameconnections=new Array();
 				}
+				break;
+			case 'endTurn':
+			    
+			    
+					dojo.forEach(this.gameconnections, dojo.disconnect);
+					dojo.query(".borderpulse").removeClass("borderpulse");
+					dojo.query(".traveller").removeClass("traveller");
+					dojo.query(".redborder").removeClass("redborder");
+					this.gameconnections=new Array();
+				
             case 'dummmy':
                 break;
             }               
@@ -284,7 +304,11 @@ function (dojo, declare) {
          * new parent immediately, so parent is correct during animation
          */
         slideToObjectRelative : function(token, finalPlace, tlen, tdelay, onEnd) {
+<<<<<<< HEAD
+            this.MyresetPosition(token);
+=======
             this.resetPosition(token);
+>>>>>>> origin/master
             dojo.removeClass( token , "traveller");
             dojo.addClass( token , "traveller");
 			
@@ -294,7 +318,7 @@ function (dojo, declare) {
 			
 
             dojo.connect(anim, "onEnd", dojo.hitch(this, function(token) {
-                this.stripPosition(token);
+                this.MystripPosition(token);
                 if (onEnd) onEnd(token);
             }));
 
@@ -379,6 +403,13 @@ function (dojo, declare) {
 			var top = dojo.style(_a37, "top");
 			left = left + tgt.x - src.x + (tgt.w - src.w) / 2;
 			top = top + tgt.y - src.y + (tgt.h - src.h) / 2;
+<<<<<<< HEAD
+			
+			dojo.removeClass( _a37 , "traveller");
+            dojo.addClass( _a37 , "traveller");
+			
+=======
+>>>>>>> origin/master
 			return dojo.fx.slideTo(
 			{
 				node: _a37,
@@ -398,25 +429,38 @@ function (dojo, declare) {
 						dojo.style(obj, "top", "0px");
 						this.placeOnObject(obj, from);
 						var anim = this.MySlideToObject(obj, to, _a49, _a4a);
+<<<<<<< HEAD
+						var destroynode = function (node)
+						{
+							dojo.destroy(node);
+						};
+						dojo.connect(anim, "onEnd", destroynode);
+=======
 						var _a4b = function (node)
 						{
 							dojo.destroy(node);
 						};
 						dojo.connect(anim, "onEnd", _a4b);
+>>>>>>> origin/master
 						anim.play();
 						return anim;
 					},
 		
+<<<<<<< HEAD
+		MystripPosition : function(token) {
+=======
 		stripPosition : function(token) {
+>>>>>>> origin/master
             // console.log(token + " STRIPPING");
             // remove any added positioning style
             dojo.style(token, "display", null);
             dojo.style(token, "top", null);
             dojo.style(token, "left", null);
             dojo.style(token, "position", null);
+			dojo.removeClass( token , "traveller")
         },
 		
-		resetPosition : function(token) {
+		MyresetPosition : function(token) {
             // console.log(token + " RESETING");
             // remove any added positioning style
             dojo.style(token, "display", null);
@@ -426,7 +470,67 @@ function (dojo, declare) {
         },
 		////////////////////////////////////////////////
 		
-		placecard: function ( destination, card_id ,card_type )
+		slideToObjectAndDestroyAndIncCounter: function( mobile_obj , to, duration, delay ) 
+		{
+			var obj = dojo.byId(mobile_obj );
+			
+			dojo.style(obj, "position", "absolute");
+			dojo.style(obj, "left", "0px");
+			dojo.style(obj, "top", "0px");
+			var anim = this.MySlideToObject(obj, to, duration, delay );
+			
+			this.param.push(to);
+            
+			dojo.connect(anim, "onEnd", this, 'incAndDestroy' );
+			anim.play();
+			return anim;
+		},
+		
+		MyslideToObjectAndDestroy: function( mobile_obj , to, duration, delay ) 
+		{
+			var obj = dojo.byId(mobile_obj );
+			
+			dojo.style(obj, "position", "absolute");
+			dojo.style(obj, "left", "0px");
+			dojo.style(obj, "top", "0px");
+			var anim = this.MySlideToObject(obj, to, duration, delay );
+			
+			        
+			dojo.connect(anim, "onEnd", function (node)
+						{
+							dojo.destroy(node);
+						}
+						);
+			anim.play();
+			return anim;
+		},
+		
+		slideTemporaryObjectAndIncCounter: function( mobile_obj_html , mobile_obj_parent, from, to, duration, delay ) 
+		{
+			var obj = dojo.place(mobile_obj_html, mobile_obj_parent );
+			dojo.style(obj, "position", "absolute");
+			dojo.style(obj, "left", "0px");
+			dojo.style(obj, "top", "0px");
+			this.placeOnObject(obj, from);
+			
+			var anim = this.MySlideToObject(obj, to, duration, delay );
+			
+			this.param.push(to);
+            
+			dojo.connect(anim, "onEnd", this, 'incAndDestroy' );
+			anim.play();
+			return anim;
+			},
+		 
+		incAndDestroy : function(node) 
+		{				
+				dojo.destroy(node);
+				target=this.param.shift();
+				dojo.byId(target).innerHTML=eval(dojo.byId(target).innerHTML) + 1;
+		}, 
+		////////////////////////////////////////////////
+		
+		placecard: function ( destination, card_id ,card_type , origin )
 		{
 			xpos= -140*((card_type - 1 )%3 );
 			ypos= -90*(Math.floor( (card_type -1 ) / 3 ));
@@ -434,7 +538,8 @@ function (dojo, declare) {
 			
 			//dojo.style('stile_back_'+location_arg , "background-position", position);
 			
-			dojo.place( "<div id='card_"+card_id+"' class='card' style='background-position:"+position+";'></div>" , destination, "last");			
+			dojo.place( "<div id='card_"+card_id+"' class='card' style='background-position:"+position+";'></div>" , origin, "last");
+            this.slideToObjectRelative ( 'card_'+card_id , destination , 1500 )			
 		},
 		
 		addtooltipcard: function ( card_id ,card_type )
@@ -454,7 +559,7 @@ function (dojo, declare) {
 				 tooltiptext=_("Move the groundhog, then swap any two veggies opposite the groundhog");
 				break;
 				case "4" :
-				 tooltiptext=_("Swap adjacent veggies of fence posts (the groundhog blocks)");
+				 tooltiptext=_("Swap two adjacent veggies or fence posts (the groundhog blocks)");
 				break;
 				case "5" :
 				 tooltiptext=_("Exchange a card from your hand with one in the garden");
@@ -550,9 +655,35 @@ function (dojo, declare) {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
 
+<<<<<<< HEAD
+			dojo.forEach(this.gameconnections, dojo.disconnect);
+			dojo.query(".borderpulse").removeClass("borderpulse");
+		
+            if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
+            {            
+                this.ajaxcall( "/veggiegarden/veggiegarden/selectTarget.html", {
+                    target:target
+                }, this, function( result ) {} );
+            }            
+        },    
+		
+		selectDestination: function( evt )
+        {
+            // Stop this event propagation
+=======
 			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
+>>>>>>> origin/master
 			
+            dojo.stopEvent( evt );
+			if( ! this.checkAction( 'selectDestination' ) )
+            {   return; }
+
+            // Get the cliqued pos and Player field ID
+            var target =  evt.target || evt.srcElement;
+			target=target.id;
 			
+<<<<<<< HEAD
+=======
 			dojo.forEach(this.gameconnections, dojo.disconnect);
 			
 			dojo.query(".borderpulse").removeClass("borderpulse");
@@ -577,15 +708,18 @@ function (dojo, declare) {
             var target =  evt.target || evt.srcElement;
 			target=target.id;
 			
+>>>>>>> origin/master
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
 
+<<<<<<< HEAD
+=======
 			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
 			
 			
+>>>>>>> origin/master
 			dojo.forEach(this.gameconnections, dojo.disconnect);
-			
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		
             if( this.checkAction( 'selectDestination' ) )    // Check that this action is possible at this moment
@@ -625,42 +759,102 @@ function (dojo, declare) {
             // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
             // 
 			
-			dojo.subscribe( 'movetoken', this, "notif_movetoken" );
-			this.notifqueue.setSynchronous( 'movetoken', 2000 );
-			dojo.subscribe( 'selectcard', this, "notif_selectcard" );
-			this.notifqueue.setSynchronous( 'selectcard', 2000 );
-			
+			dojo.subscribe( 'moveitems', this, "notif_moveitems" );
+			this.notifqueue.setSynchronous( 'moveitems', 2000 );
+			dojo.subscribe( 'selectitem', this, "notif_selectitem" );
+			dojo.subscribe( 'cardtohand', this, "notif_cardtohand" );
+			this.notifqueue.setSynchronous( 'cardtohand', 2000 );
+			dojo.subscribe( 'cardfromhand', this, "notif_cardfromhand" );
+			this.notifqueue.setSynchronous( 'cardfromhand', 2000 );
+			dojo.subscribe( 'discard', this, "notif_discard" );
+			this.notifqueue.setSynchronous( 'discard', 2000 );
+			dojo.subscribe( 'drawcard', this, "notif_drawcard" );
+			this.notifqueue.setSynchronous( 'drawcard', 2000 );
+			dojo.subscribe('notif_finalScore', this, "notif_finalScore");
+            this.notifqueue.setSynchronous('notif_finalScore', 5000);
         },  
         
         // TODO: from this point and below, you can write your game notifications handling methods
         
-		notif_movetoken: function( notif )
+		notif_moveitems: function( notif )
         {
-            console.log( 'notif_movetoken' );
+            
+			console.log( 'notif_moveitems' );
             console.log( notif );
-            this.slideToObjectRelative (notif.args.card_id, notif.args.destination,1500)
+			for (var thisitem in notif.args.moveitems) {
+            this.slideToObjectRelative (thisitem, notif.args.moveitems[thisitem],1500);
+			}
         },
 		
-		notif_selectcard: function( notif )
+		notif_cardtohand: function( notif )
         {
-            console.log( 'notif_selectcard' );
+            console.log( 'notif_cardtohand' );
             console.log( notif );
-            dojo.toggleClass("card_"+notif.args.card_id,"tileselected");
+            
+			if ( this.isCurrentPlayerActive() )
+			{
+				this.slideToObjectRelative ("card_"+notif.args.card_id, 'hand',1500);
+			}
+			else
+			{
+				this.slideToObjectAndDestroyAndIncCounter ("card_"+notif.args.card_id, 'cardcount_p'+notif.args.player_id,1500);
+			}	
         },
 		
-        /*
-        Example:
-        
-        notif_cardPlayed: function( notif )
+		notif_cardfromhand: function( notif )
         {
-            console.log( 'notif_cardPlayed' );
+            console.log( 'notif_cardfromhand' );
             console.log( notif );
             
-            // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
+			if ( this.player_id == notif.args.player_id )
+			{
+				this.slideToObjectRelative ("card_"+notif.args.card_id, 'field'+notif.args.card_pos,1500);
+			}
+			else
+			{
+				this.placecard('field'+notif.args.card_pos ,notif.args.card_id, notif.args.card_type,'cardcount_p'+notif.args.player_id);
+			}	
+        },
+		
+		notif_discard: function( notif )
+        {
+            console.log( 'notif_discard' );
+            console.log( notif );
             
-            // TODO: play the card in the user interface.
-        },    
-        
-        */
+			
+			this.MyslideToObjectAndDestroy ("card_"+notif.args.card_id, 'deck' ,1500);
+			
+        },
+		
+		notif_drawcard: function( notif )
+        {
+            console.log( 'notif_drawcard' );
+            console.log( notif );
+            
+			
+			this.placecard ("table", notif.args.card_id, notif.args.card_type , "deck");
+			
+        },
+		
+		notif_selectitem: function( notif )
+        {
+            
+			console.log( 'notif_selectitem' );
+            console.log( notif );
+            dojo.query("#"+notif.args.item).addClass("redborder");
+        },
+		
+      notif_finalScore: function (notif) 
+		{
+            console.log('**** Notification : finalScore');
+            console.log(notif);
+			id     = _(notif.args.id);
+			title  = _(notif.args.title);
+			header = _(notif.args.header);
+			footer = _(notif.args.footer);
+			closing= _(notif.args.closing);
+			
+            this.displayTableWindow( id, title, notif.args.table, header, footer, closing);
+        }
    });             
 });

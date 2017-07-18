@@ -60,11 +60,14 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
   pointer-events: visible;
+<<<<<<< HEAD
+=======
   /* display: inline-flex; */
   margin: 1px;
   flex-wrap: wrap;
   flex-direction: row;
   align-items: flex-start;
+>>>>>>> origin/master
 }
 
 @media screen and (min-width: 1920px){
@@ -121,15 +124,22 @@
 #deck {
     width: 140px;
     height: 90px;
+    top: 1px;
+    left: 1px;
     background-image: url('img/cardback.jpg');
     border-radius: 7px;
     background-size: cover;
-    display: inline-block;
+    display: block;
     margin: 15px;
+<<<<<<< HEAD
+=======
     /* flex: 0 1 auto; */
     
+>>>>>>> origin/master
     margin-bottom: 30px;
+    position: relative;
     transform:translateZ(33px);
+    position: absolute;
  }
 
  #deck div:nth-child(1) {
@@ -172,7 +182,14 @@
     box-shadow: 1px 0px 2px 2px rgba(82, 82, 82, 0.26);
  }
 
+#boardwrapper{
+	width: 790px;
+    height: 580px;
+}
+
 .boarddiv {
+    top: 140px;
+    left: 1px;
     width: 777px;
     height: 570px;
     background-image: url('img/board.jpg');
@@ -180,27 +197,62 @@
     background-size: cover;
     margin: 5px;
     flex: 0 1 auto;
-    box-shadow: 3px 7px 3px 2px rgba(0, 0, 0, 0.58);
+    box-shadow: 7px 9px 3px 2px rgba(0, 0, 0, 0.58);
     border: DarkOliveGreen;
     border-style: solid;
-    border-width: 5px;
-    position: relative;
+    /* display: block; */
+    position: absolute;
+    border-width: 4px;
  } 
 
 #table_wrap {
-	display: inline-block;
-	width: 95%;
+	display: block;
 }
 
 #table{
+<<<<<<< HEAD
+	top: 2px;
+	left: 185px;
+	min-width: 590px;
+	min-height: 100px;
+=======
 	min-width: 610px;
 	min-height: 110px;
+>>>>>>> origin/master
 	/* flex: 1 1 auto; */
 	border-radius: 10px;
-	display:inline-block;
+	/* display: block; */
+	padding:10px;
+	position: absolute;
 }
 
 
+<<<<<<< HEAD
+#table .card:nth-child(1) {
+    
+    transform: translate(0px,5px)
+}
+
+#table .card:nth-child(2) {
+    
+    transform: translate(150px,5px)
+}
+
+#table .card:nth-child(3) {
+    
+    transform: translate(300px,5px)
+}
+
+#table .card:nth-child(4) {
+    
+    transform: translate(450px,5px)
+}
+
+
+#hand .card:nth-child(1) {
+    
+    transform: translate(0px,0px)
+=======
 #table .card {
 	margin:5px;
 	position:relative !important;
@@ -209,7 +261,34 @@
 #hand .card {
 	margin:5px;
 	position:relative !important;
+>>>>>>> origin/master
 }
+
+#hand .card:nth-child(2) {
+    
+    transform: translate(150px,0px)
+}
+
+#hand .card:nth-child(3) {
+    
+    transform: translate(300px,0px)
+}
+
+#hand .card:nth-child(4) {
+    
+    transform: translate(450px,0px)
+}
+
+#hand .card:nth-child(5) {
+    
+    transform: translate(600px,0px)
+}
+#hand .card:nth-child(6) {
+    
+    transform: translate(750px,0px)
+}
+
+
 
 .whiteblock {
     margin-top: 10px;
@@ -218,12 +297,21 @@
 }
 
 #hand{
+<<<<<<< HEAD
+	top: 710px;
+	width: 890px;
+	min-height: 93px;
+=======
 	width: 790px;
 	min-height: 210px;
+>>>>>>> origin/master
 	transform: rotatex(-12deg) translateZ(12px);
 	flex: 1 1 auto;
 	border-radius: 5px;
+	margin-top: 30px;
+	position: absolute;
 }
+
 .card {
     width: 140px;
     height: 90px;
@@ -232,6 +320,10 @@
     display: inline-block;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.22);
     position: absolute;
+    -webkit-transition: transform 0.5s;
+    transition: transform 0.5s;
+    -moz-transition: transform 0.5s;
+    -o-transition: transform 0.5s;
 }
 
 
@@ -246,10 +338,10 @@
 
 .tooltiptext{
 	position:absolute;
-	margin-top: 190px;
-	margin-left: 23px;
+	top: 185px;
+	left: 29px;
 	width: 137px;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight: bold;
 }
 .token {
@@ -257,8 +349,13 @@
     height: 60px;
     background-image: url('img/tokens.png');
     border-radius: 3px;
-    display: inline-block;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
+    -webkit-transition: transform 0.5s;
+    transition: transform 0.5s;
+    -moz-transition: transform 0.5s;
+    -o-transition: transform 0.5s;
+    position: absolute;
+	display:block;
 }
 
 .rabbit {
@@ -266,13 +363,23 @@
     height: 68px;
     background-image: url('img/tokens.png');
     border-radius: 50%;
-    display: inline-block;
     background-color:white;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -180px;
     background-repeat:no-repeat;
+<<<<<<< HEAD
+    position: absolute;
+    display:block;
+    top: -4px;
+    left: -4px;
+    /* -webkit-transition: transform 0.5s; */
+    /* transition: transform 0.5s; */
+    -moz-transition: transform 0.5s;
+    -o-transition: transform 0.5s;
+=======
     margin-top: -4px;
     margin-left: -4px;
+>>>>>>> origin/master
 }
 
 .groundhog {
@@ -284,10 +391,15 @@
     background-repeat:no-repeat;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -235px;
-    margin-top: 10px;
-    margin-left: 3px;
+    top: 10px;
+    left: 10px;
     position: absolute;
+	display:block;
     z-index: 300;
+    -webkit-transition: transform 0.5s;
+    transition: transform 0.5s;
+    -moz-transition: transform 0.5s;
+    -o-transition: transform 0.5s;
 }
 
 .field {
@@ -299,7 +411,11 @@
     border-style: solid;
     position: absolute;
     border-width: 1px;
+<<<<<<< HEAD
+    display: block;
+=======
     display: inline-block;
+>>>>>>> origin/master
 }
 
 .fence {
@@ -310,6 +426,7 @@
     border: DarkOliveGreen;
     border-style: solid;
     border-width: 1px;
+	display: block;
 }
 
 #field0{
@@ -426,22 +543,37 @@
 }
 
 .cardcounter {
-    width: 50px;
-    height: 50px;
-    margin: 1px;
-    background-image: url(img/hand_icon.png);
-    background-size: cover;
+	vertical-align:middle;
+	width: 50px;
+	height: 50px;
+	margin: 1px;
+	background-image: url(img/hand_icon.png);
+	background-size: cover;
+	position: relative;
+	display: inline-block;
+}
+
+.cardcounter_board {
     position: relative;
     display: inline-block;
+    font-weight: bold;
+    font-size: 25;
 }
 
 .borderpulse {
     cursor: pointer;
     animation: pulse 2s ease infinite;
+<<<<<<< HEAD
+	-webkit-animation: pulse 2s ease infinite !important;
+    -moz-animation: pulse 2s ease infinite !important;
+    -o-animation: pulse 2s ease infinite !important;
+    animation: pulse 2s ease infinite !important;
+=======
 	-webkit-animation: pulse 2s ease infinite;
     -moz-animation: pulse 2s ease infinite;
     -o-animation: pulse 2s ease infinite;
     animation: pulse 2s ease infinite;
+>>>>>>> origin/master
     z-index: 200 !important;
 }
 
@@ -495,15 +627,26 @@
 
 
 
+<<<<<<< HEAD
+.redborder {
+=======
 .tileselected {
+>>>>>>> origin/master
 border: 2px red solid !important;
 }
 
 .traveller {
+<<<<<<< HEAD
+    -webkit-animation: travelanim 1.6s ease 1;
+    -moz-animation: travelanim 1.6s ease 1;
+    -o-animation: travelanim 1.6s ease 1;
+    animation: travelanim 1.6s ease 1
+=======
     -webkit-animation: travelanim 1.5s ease 1;
     -moz-animation: travelanim 1.5s ease 1;
     -o-animation: travelanim 1.5s ease 1;
     animation: travelanim 1.5s ease 1
+>>>>>>> origin/master
 }
 
 @keyframes "travelanim" {

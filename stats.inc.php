@@ -55,6 +55,30 @@ $stats_type = array(
         "turns_number" => array("id"=> 10,
                     "name" => totranslate("Number of turns"),
                     "type" => "int" ),
+					
+		"carrots_value" => array("id"=> 11,
+                    "name" => totranslate("Carrots value"),
+                    "type" => "int" ),
+		
+		"cabbage_value" => array("id"=> 12,
+                    "name" => totranslate("Cabbage value"),
+                    "type" => "int" ),
+		
+		"peas_value" => array("id"=> 13,
+                    "name" => totranslate("Peas value"),
+                    "type" => "int" ),
+		
+		"peppers_value" => array("id"=> 14,
+                    "name" => totranslate("Peppers value"),
+                    "type" => "int" ),
+		
+		"potato_value" => array("id"=> 15,
+                    "name" => totranslate("Potato value"),
+                    "type" => "int" ),
+		
+		"tomato_value" => array("id"=> 16,
+                    "name" => totranslate("Tomato value"),
+                    "type" => "int" )
 
 /*
         Examples:
@@ -76,9 +100,33 @@ $stats_type = array(
         "turns_number" => array("id"=> 10,
                     "name" => totranslate("Number of turns"),
                     "type" => "int" ),
+										
+		"carrots_picked" => array("id"=> 11,
+                    "name" => totranslate("Carrots picked"),
+                    "type" => "int" ),
+		
+		"cabbages_picked" => array("id"=> 12,
+                    "name" => totranslate("Cabbages picked"),
+                    "type" => "int" ),
+		
+		"peas_picked" => array("id"=> 13,
+                    "name" => totranslate("Peas picked"),
+                    "type" => "int" ),
+		
+		"peppers_picked" => array("id"=> 14,
+                    "name" => totranslate("Peppers picked"),
+                    "type" => "int" ),
+		
+		"potatos_picked" => array("id"=> 15,
+                    "name" => totranslate("Potatos picked"),
+                    "type" => "int" ),
+		
+		"tomatos_picked" => array("id"=> 16,
+                    "name" => totranslate("Tomatos picked"),
+                    "type" => "int" )
     
-/*
-        Examples:    
+
+    /*    Examples:    
         
         
         "player_teststat1" => array(   "id"=> 10,

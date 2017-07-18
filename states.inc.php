@@ -102,9 +102,22 @@ $machinestates = array(
 		"action" => "stDestination",
 		"args" => "argPossibleDestinations",
 		"possibleactions" => array( "selectDestination" ),
+<<<<<<< HEAD
+        "transitions" => array( "endTurn" => 6 ) 
+=======
         "transitions" => array( "startTurn" => 2 ) 
+>>>>>>> origin/master
     ),
 		
+	6 => array(
+        "name" => "endTurn",
+		"description" => clienttranslate('end of the turn'),
+        "type" => "game",
+        "action" => "stendTurn",
+        "updateGameProgression" => false, 
+        "transitions" => array( "" => 2  ) ,
+		
+    ),	
     90 => array(
 	   "description" => clienttranslate('Final Score'),
         "name" => "gameEndScoring",

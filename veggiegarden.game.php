@@ -94,9 +94,22 @@ class veggiegarden extends Table
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
-        //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
-        //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
-
+        self::initStat( 'table', 'turns_number' , 0 );    // Init a table statistics
+	/*	self::initStat( 'table', 'carrots_value', 0 );
+		self::initStat( 'table', 'cabbage_value', 0 );
+		self::initStat( 'table', 'peas_value'   , 0 );
+		self::initStat( 'table', 'peppers_value', 0 );
+		self::initStat( 'table', 'potato_value' , 0 );
+		self::initStat( 'table', 'tomato_value' , 0 ); */
+		
+        self::initStat( 'player', 'turns_number'   , 0 );  // Init a player statistics (for all players)
+	/*	self::initStat( 'player', 'carrots_picked' , 0 );
+		self::initStat( 'player', 'cabbages_picked', 0 );
+		self::initStat( 'player', 'peas_picked'    , 0 );
+		self::initStat( 'player', 'peppers_picked' , 0 );
+		self::initStat( 'player', 'potatos_picked' , 0 );
+		self::initStat( 'player', 'tomatos_picked' , 0 ); */
+		
         // TODO: setup the initial game situation here
 		
 			
@@ -166,7 +179,7 @@ class veggiegarden extends Table
 			}
 		else
 			{
-			self::setGameStateInitialValue( 'groundhog_pos', 0 );
+			self::setGameStateInitialValue( 'groundhog_pos', -55 ); //NO Groundhog
 			}
 
 	    self::setGameStateInitialValue( 'iterations', 0 );	
@@ -213,7 +226,7 @@ class veggiegarden extends Table
 		
 		$result['hand'] = $this->cards->getCardsInLocation( 'hand', $current_player_id );
 		
-		$sql = "SELECT card_location_arg, COUNT(*) amount FROM cards WHERE 1 GROUP BY card_location_arg ";
+		$sql = "SELECT card_location_arg, COUNT(*) amount FROM cards WHERE card_location='hand' GROUP BY card_location_arg ";
         $result['cardcount'] = self::getCollectionFromDb( $sql );
 		
   
@@ -297,10 +310,10 @@ class veggiegarden extends Table
 	
 	//$this->cards->moveCard( $card_id,'hand',$player_id );
 	$thiscardtype=$thiscard['type'];
-	self::notifyAllPlayers( "selectcard", clienttranslate( '${player_name} picks a ${thiscard_name} card' ), array(
+	self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a ${thiscard_name} card' ), array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
-						'card_id' => $card_id ,  
+						'item' => 'card_'.$card_id ,  
 						'thiscard_name' =>  $this->card_types[$thiscardtype]['name']
 						) );	
 			
@@ -315,6 +328,45 @@ class veggiegarden extends Table
 		
 		switch ($targettype){
 			case "card_":
+<<<<<<< HEAD
+				$card_id = substr( $target, 5, 2 ) ; //  card_id
+				self::setGameStateValue( 'card_target', $card_id );
+				self::setGameStateValue( 'token_target', 0 );
+				self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a card to apply the effect' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'item' => 'card_'.$card_id   
+						) );	
+				$cardpicked=self::getGameStateValue( 'card_picked');		
+				$card=$this->cards->getCard( $cardpicked );
+				$target=$this->cards->getCard( $card_id );
+				if ($card['type'] == 3)   // move the groundhog
+				{
+					self::setGameStateValue( 'groundhog_pos', $target['location_arg'] );
+					
+					$moveitems=  array( 'groundhog' => 'field'.$target['location_arg'] );
+					
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} moves the groundhog' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'moveitems' => $moveitems
+						) );	
+					
+				}
+				break;
+			case "token":
+				$card_id = substr( $target, 6, 2 ) ; //  token_id
+				self::setGameStateValue( 'card_target', 0 );
+				self::setGameStateValue( 'token_target', $card_id );
+				self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a fence token to apply the effect' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'item' => 'token_'.$card_id 
+						) );	
+			break;
+		}
+		
+=======
 				$card_id = $targettype=substr( $target, 5, 2 ) ; //  card_id
 				self::setGameStateValue( 'card_target', $card_id );
 				self::setGameStateValue( 'token_target', 0 );
@@ -331,10 +383,305 @@ class veggiegarden extends Table
 							'player_name' => self::getActivePlayerName(),
 							'target' => $target 						
 							) );	
+>>>>>>> origin/master
 			
 	$this->gamestate->nextState( 'selectDestination' );
     }
 	
+<<<<<<< HEAD
+	function selectDestination( $destination)
+    {
+		self::checkAction( 'selectDestination' );
+		$player_id = self::getActivePlayerId();
+		$targettype=substr( $destination, 0, 5 ) ; //  card_ field fence		
+		self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} selects a destination for the card effect' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'item' => $destination 						
+						) );	
+		
+        $cardpicked=self::getGameStateValue( 'card_picked');
+		$cardtarget=self::getGameStateValue( 'card_target');
+		$tokentarget=self::getGameStateValue( 'token_target');
+		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+		$Ygroundhog_pos= $groundhog_pos % 10 ;
+		$Xgroundhog_pos=  ($groundhog_pos - $groundhog_pos % 10) / 10; 
+		$card=$this->cards->getCard( $cardpicked );		
+        
+		switch ($card['type']){
+		case "1":   // CARROTS Move BUNNY
+			$sql = "select card_location_arg from tokens where card_type=0";
+			$bunnypos=self::getUniqueValueFromDB( $sql );
+			$sql = "select card_id from tokens where card_type=0";
+			$bunny_id=self::getUniqueValueFromDB( $sql );
+			$token_id = substr( $destination, 6, 2 ) ; //  token_id
+			$sql = "select card_location_arg from tokens where card_id=".$token_id;
+			$tokenpos=self::getUniqueValueFromDB( $sql );
+			self::DbQuery( "UPDATE tokens SET card_location_arg=".$tokenpos." WHERE card_type=0" );
+			self::DbQuery( "UPDATE tokens SET card_location_arg=".$bunnypos." WHERE card_id=".$token_id );
+			
+					
+			$moveitems=  array( 'token_'.$token_id => 'fence'.$bunnypos ,
+						        'token_'.$bunny_id => 'fence'.$tokenpos 
+							);
+					
+			self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} moves the bunny to other fence post' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'moveitems' => $moveitems
+						) );
+		
+		break;
+		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
+			$targettype=substr( $destination, 0, 5 ) ; //  card_ or token?
+			
+			switch ($targettype){
+				case "card_":
+					$card_id = substr( $destination, 5, 2 ) ; //  card_id
+					$sql = "select card_location_arg from cards where card_id=".$cardtarget;
+					$targetpos=self::getUniqueValueFromDB( $sql );
+					$sql = "select card_location_arg from cards where card_id=".$card_id;
+			        $cardpos=self::getUniqueValueFromDB( $sql );
+					
+					$delta=$cardpos-$targetpos;
+					
+					$Y= $targetpos % 10 ;
+		            $X=  ($targetpos - $targetpos % 10) / 10; 
+					
+					$shiftcards= array ();
+					
+					switch($delta)
+					{
+						case "1":
+						    $shiftcards= array ($X*10+0,$X*10+1,$X*10+2,$X*10+3  );
+							break;
+						case "-1":
+					        $shiftcards= array ($X*10+3,$X*10+2,$X*10+1,$X*10+0  );
+							break;
+						case "10":
+					        $shiftcards= array (0+$Y,10+$Y,20+$Y,30+$Y  );
+							break;
+						case "-10":
+					        $shiftcards= array (30+$Y,20+$Y,10+$Y,0+$Y  );
+							break;	
+					}
+					$shiftcards_ids= array ();
+					for ($c=0;$c<=3;$c++)
+					{
+						$sql = "select card_id from cards where (card_location='field') and (card_location_arg=".$shiftcards[$c].")";
+						$shiftcards_ids[$c]=self::getUniqueValueFromDB( $sql );
+					}
+					
+					$moveitems=  array();
+					
+					for ($c=1;$c<=4;$c++)
+					{
+						self::DbQuery( "UPDATE cards SET card_location_arg=".$shiftcards[$c%4]." WHERE card_id=".$shiftcards_ids[$c-1] );
+						$moveitems[ 'card_'.$shiftcards_ids[$c-1]] = 'field'.$shiftcards[$c%4] ;
+					}
+					
+					
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} shifts a row or column of cards ' ), array(
+								'player_id' => $player_id,
+								'player_name' => self::getActivePlayerName(),
+								'moveitems' => $moveitems
+								) );
+					break;
+				case "token":
+					$token_id = substr( $destination, 6, 2 ) ; //  token_id
+					$sql = "select card_location_arg from tokens where card_id=".$tokentarget;
+					$targetpos=self::getUniqueValueFromDB( $sql );
+					$sql = "select card_location_arg from tokens where card_id=".$token_id;
+			        $tokenpos=self::getUniqueValueFromDB( $sql );
+					
+					$delta=$tokenpos-$targetpos;
+					
+					$Y= $targetpos % 10 ;
+		            $X=  ($targetpos - $targetpos % 10) / 10; 
+					
+					$shiftcards= array ();
+					
+					switch($delta)
+					{
+						case "1":
+						    $shiftcards= array ($X*10+1,$X*10+2  );
+							break;
+						case "-1":
+					        $shiftcards= array ($X*10+2,$X*10+1  );
+							break;
+						case "10":
+					        $shiftcards= array (0+$Y,10+$Y,20+$Y,30+$Y  );
+							break;
+						case "-10":
+					        $shiftcards= array (30+$Y,20+$Y,10+$Y,0+$Y  );
+							break;	
+					}
+					$shiftcards_ids= array ();
+					for ($c=0;$c<sizeof($shiftcards);$c++)
+					{
+						$sql = "select card_id from tokens where (card_location='fence') and (card_location_arg=".$shiftcards[$c].")";
+						$shiftcards_ids[$c]=self::getUniqueValueFromDB( $sql );
+					}
+					
+					$moveitems=  array();
+					
+					for ($c=1;$c<=sizeof($shiftcards);$c++)
+					{
+						self::DbQuery( "UPDATE tokens SET card_location_arg=".$shiftcards[($c%sizeof($shiftcards))]." WHERE card_id=".$shiftcards_ids[$c-1] );
+						$moveitems[ 'token_'.$shiftcards_ids[$c-1]] = 'fence'.$shiftcards[($c%sizeof($shiftcards))] ;
+					}
+					
+					
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} shifts a row or column of tokens ' ), array(
+								'player_id' => $player_id,
+								'player_name' => self::getActivePlayerName(),
+								'moveitems' => $moveitems,
+							    
+								) );
+				break;
+			}
+		break;
+		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
+			        $card_id = substr( $destination, 5, 2 ) ; //  card_id
+					$sql = "select card_location_arg from cards where card_id=".$cardtarget;
+					$targetpos=self::getUniqueValueFromDB( $sql );
+					$sql = "select card_location_arg from cards where card_id=".$card_id;
+			        $cardpos=self::getUniqueValueFromDB( $sql );
+					
+					$opositepos=2*$targetpos - $cardpos;
+					$sql = "select card_id from cards where (card_location='field') and (card_location_arg=".$opositepos.")";
+			        $opositeid=self::getUniqueValueFromDB( $sql );
+					
+					
+					self::DbQuery( "UPDATE cards SET card_location_arg=".$opositepos." WHERE card_id=".$card_id );
+					self::DbQuery( "UPDATE cards SET card_location_arg=".$cardpos." WHERE card_id=".$opositeid );
+							
+					$moveitems=  array( 'card_'.$card_id => 'field'.$opositepos ,
+										'card_'.$opositeid => 'field'.$cardpos 
+									);
+							
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} shifts two cards over the groundhog' ), array(
+								'player_id' => $player_id,
+								'player_name' => self::getActivePlayerName(),
+								'moveitems' => $moveitems
+								) );
+		
+		break;
+		case "4":     //PEPPERS  Swaps two cards or tokens (the groundhog blocks one card)
+			$targettype=substr( $destination, 0, 5 ) ; //  card_ or token?
+			
+			switch ($targettype){
+				case "card_":
+					$card_id = substr( $destination, 5, 2 ) ; //  card_id
+					$sql = "select card_location_arg from cards where card_id=".$cardtarget;
+					$targetpos=self::getUniqueValueFromDB( $sql );
+					$sql = "select card_location_arg from cards where card_id=".$card_id;
+			        $cardpos=self::getUniqueValueFromDB( $sql );
+					
+					self::DbQuery( "UPDATE cards SET card_location_arg=".$targetpos." WHERE card_id=".$card_id );
+					self::DbQuery( "UPDATE cards SET card_location_arg=".$cardpos." WHERE card_id=".$cardtarget );
+							
+					$moveitems=  array( 'card_'.$card_id => 'field'.$targetpos ,
+										'card_'.$cardtarget => 'field'.$cardpos 
+									);
+							
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} swaps two cards' ), array(
+								'player_id' => $player_id,
+								'player_name' => self::getActivePlayerName(),
+								'moveitems' => $moveitems
+								) );
+					break;
+				case "token":
+					$token_id = substr( $destination, 6, 2 ) ; //  token_id
+					$sql = "select card_location_arg from tokens where card_id=".$tokentarget;
+					$targetpos=self::getUniqueValueFromDB( $sql );
+					$sql = "select card_location_arg from tokens where card_id=".$token_id;
+			        $tokenpos=self::getUniqueValueFromDB( $sql );
+					
+					self::DbQuery( "UPDATE tokens SET card_location_arg=".$targetpos." WHERE card_id=".$token_id );
+					self::DbQuery( "UPDATE tokens SET card_location_arg=".$tokenpos." WHERE card_id=".$tokentarget );
+					
+					$moveitems=  array( 'token_'.$token_id => 'fence'.$targetpos ,
+										'token_'.$tokentarget => 'fence'.$tokenpos 
+									);
+							
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} swaps two fence tokens' ), array(
+								'player_id' => $player_id,
+								'player_name' => self::getActivePlayerName(),
+								'moveitems' => $moveitems
+								) );
+					
+				break;
+			}
+		
+		break;
+		case "5":      // POTATO  Exchange one card from your hand with one on the table (the groundhog blocks one card)
+			$card_id = substr( $destination, 5, 2 ) ; //  card_id
+			$sql = "select card_location_arg from cards where card_id=".$cardtarget;
+			$targetpos=self::getUniqueValueFromDB( $sql );
+			$sql = "select card_location_arg from cards where card_id=".$card_id;
+			$cardpos=self::getUniqueValueFromDB( $sql );
+			
+			self::DbQuery( "UPDATE cards SET card_location_arg=".$player_id.", card_location='hand' WHERE card_id=".$card_id );
+			self::DbQuery( "UPDATE cards SET card_location_arg=".$cardpos." , card_location='field' WHERE card_id=".$cardtarget );
+								
+			self::notifyAllPlayers( "cardtohand", clienttranslate( '${player_name} picks a card from the garden' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $card_id
+						) );
+			
+			$sql = "select card_type from cards where card_id=".$cardtarget;
+			$target_type=self::getUniqueValueFromDB( $sql );
+			
+			self::notifyAllPlayers( "cardfromhand", clienttranslate( '${player_name} replaces the card with one from the hand' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $cardtarget,
+						'card_pos' =>  $cardpos,
+						'card_type' => $target_type
+						) );			
+			break;
+		case "6":     //TOMATO Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)
+		    $card_id = substr( $destination, 5, 2 ) ; //  card_id
+			$sql = "select card_location_arg from cards where card_id=".$cardtarget;
+			$targetpos=self::getUniqueValueFromDB( $sql );
+			$sql = "select card_location_arg from cards where card_id=".$card_id;
+			$cardpos=self::getUniqueValueFromDB( $sql );
+			
+			self::DbQuery( "UPDATE cards SET card_location_arg=".$targetpos.", card_location='field' WHERE card_id=".$card_id );
+			self::DbQuery( "UPDATE cards SET card_location_arg=".$player_id." , card_location='removed' WHERE card_id=".$cardtarget );
+								
+			self::notifyAllPlayers( "discard", clienttranslate( '${player_name} discards a card from the garden' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $cardtarget
+						) );
+									
+			$moveitems=  array( 'card_'.$card_id => 'field'.$targetpos 	);
+							
+			self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} replaces the card wiht one from harvest' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'moveitems' => $moveitems
+						) );			
+			break;
+			
+		
+		}
+
+	self::DbQuery( "UPDATE cards SET card_location_arg=".$player_id.", card_location='hand' WHERE card_id=".$cardpicked );
+			
+								
+	self::notifyAllPlayers( "cardtohand", clienttranslate( '${player_name} picks the selected card' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $cardpicked
+						) );
+		
+	$this->gamestate->nextState( 'endTurn' );
+	
+=======
 	function selectDestination( $target)
     {
 		self::checkAction( 'selectDestination' );
@@ -343,6 +690,7 @@ class veggiegarden extends Table
 		
 			
 	//$this->gamestate->nextState( 'selectDestination' );
+>>>>>>> origin/master
     }
 	
 	
@@ -378,11 +726,19 @@ class veggiegarden extends Table
         switch ($card['type'])
 		{
 		case "1":   // CARROTS Move BUNNY
+<<<<<<< HEAD
+		    $sql = "select card_location_arg pos from tokens where card_type<>0";
+			$notbunnypos=self::getCollectionFromDb( $sql );
+			foreach( $notbunnypos as $thispos )
+			{
+				array_push($result["possibledestinations"],"fence".$thispos['pos']);
+=======
 		    $sql = "select card_location_arg from tokens where card_type<>0";
 			$notbunnypos=self::getObjectListFromDB( $sql );
 			foreach( $notbunnypos as $thispos => $notbunnypos )
 			{
 				array_push($result["possibledestinations"],"fence".$notbunnypos[$thispos]);
+>>>>>>> origin/master
 			}
 		break;
 		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
@@ -441,6 +797,17 @@ class veggiegarden extends Table
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
 				
+<<<<<<< HEAD
+				for ($y=-1 ; $y<=1 ; $y+=1) 
+				{	
+					for ($x=-1 ; $x<=1 ; $x+=1) 
+					{	
+						if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget+$y))) 
+						{
+							array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget+$y));
+						}	
+					}
+=======
 			  	for ($x=-1 ; $x<=1 ; $x+=2) 
 				{	
 					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget))) 
@@ -454,6 +821,7 @@ class veggiegarden extends Table
 					{
 						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
 					}	
+>>>>>>> origin/master
 				}
 		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
 			if ($cardtarget >= 1 )
@@ -462,6 +830,18 @@ class veggiegarden extends Table
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
 				
+<<<<<<< HEAD
+			  	for ($y=-1 ; $y<=1 ; $y+=1) 
+				{	
+					for ($x=-1 ; $x<=1 ; $x+=1) 
+					{	
+						if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget+$y))) 
+						{
+							array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget+$y));
+						}	
+					}
+				}
+=======
 			  	for ($x=-1 ; $x<=1 ; $x+=2) 
 				{	
 					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ($groundhog_pos != (($Xtarget+$x)*10+$Ytarget)) ) 
@@ -476,6 +856,7 @@ class veggiegarden extends Table
 						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
 					}	
 				}		
+>>>>>>> origin/master
 			}
 			if ($tokentarget >= 1 )	
 			{
@@ -520,10 +901,17 @@ class veggiegarden extends Table
 		break;
 		case "6":     //TOMATO Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)
 					$sql = "select card_id from cards where card_location='table' and card_id<>".$card['id'];
+<<<<<<< HEAD
+					$cardsintable=self::getCollectionFromDb( $sql );
+					foreach( $cardsintable as $thiscard )
+					{
+						array_push($result["possibledestinations"],"card_".$thiscard['card_id']);
+=======
 					$cardsintable=self::getObjectListFromDB( $sql );
 					foreach( $cardsintable as $thiscard => $cardsintable )
 					{
 						array_push($result["possibledestinations"],"card_".$cardsintable[$thiscard]);
+>>>>>>> origin/master
 					}
 		break;
 		}
@@ -662,6 +1050,24 @@ class veggiegarden extends Table
         self::setGameStateValue( 'card_picked', 0 );	
 		self::setGameStateValue( 'card_target', 0 );	
 		self::setGameStateValue( 'token_target', 0 );
+<<<<<<< HEAD
+		
+		self::incStat( 1, $name, 'turns_number', self::getActivePlayerId() );
+		
+		for ($x=1 ; $this->cards->countCardInLocation( 'table' ) < 4 ; $x++)
+		{
+			$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table' );
+			self::notifyAllPlayers( "drawcard", clienttranslate( '${player_name} draws a new card for the harvest' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'card_id' => $PlayedCard['id'],
+						'card_type' => $PlayedCard['type']
+						) );
+			
+			
+		}
+=======
+>>>>>>> origin/master
         
 		$this->gamestate->nextState( 'playerpick' );
     }
@@ -689,13 +1095,104 @@ class veggiegarden extends Table
         // (very often) go to another gamestate
         // $this->gamestate->nextState( 'some_gamestate_transition' );
     }
-
-	function stGameEndScoring()
+	
+	function stendTurn()
     {
-        // Do some stuff ...
+            $cardpicked=self::getGameStateValue( 'card_picked');
+			
+			
+			
+		$this->activeNextPlayer();
+        $this->gamestate->nextState( );
+    }
+
+	function displayScores()
+    {
+        $players = self::loadPlayersBasicInfos();
+		
+		$carrots_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=1 and cards.card_location="field"');
+		$cabbage_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=2 and cards.card_location="field"');
+		$peas_value   =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=3 and cards.card_location="field"');
+		$peppers_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=4 and cards.card_location="field"');
+		$potato_value =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=5 and cards.card_location="field"');
+		$tomato_value =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=6 and cards.card_location="field"');
+		
+		self::setStat( $carrots_value, 'carrots_value');
+		self::setStat( $cabbage_value, 'cabbage_value');
+		self::setStat( $peas_value   , 'peas_value'   );
+		self::setStat( $peppers_value, 'peppers_value');
+		self::setStat( $potato_value , 'potato_value' );
+		self::setStat( $tomato_value , 'tomato_value' );
+		      
+        $table[] = array();
         
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
+        //left hand col
+        $table[0][] = array( 'str' => ' ', 'args' => array(), 'type' => 'header');
+        $table[1][] = "<div class='carrots icon' ></div>=".$carrots_value;
+        $table[2][] = "<div class='cabbage icon' ></div>=".$cabbage_value;
+        $table[3][] = "<div class='peas icon' ></div>="   .$peas_value   ;
+		$table[4][] = "<div class='peppers icon' ></div>=".$peppers_value;
+		$table[5][] = "<div class='potato icon' ></div>=" .$potato_value ;
+		$table[6][] = "<div class='tomato icon' ></div>=" .$tomato_value ;
+        $table[7][] = clienttranslate($this->resources["score_window_title"]);
+		
+        foreach( $players as $player_id => $player )
+        {
+            $table[0][] = array( 'str' => '${player_name}',
+                                 'args' => array( 'player_name' => $player['player_name'] ),
+                                 'type' => 'header'
+                               );
+            
+			$carrots_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=1) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $cabbages_picked=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=2) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $peas_picked    =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=3) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $peppers_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=4) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $potatos_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=5) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $tomatos_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=6) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		
+			self::setStat( $carrots_picked , 'carrots_picked', $player['player_id'] );
+			self::setStat( $cabbages_picked, 'cabbages_picked',$player['player_id'] );
+			self::setStat( $peas_picked    , 'peas_picked',    $player['player_id'] );
+			self::setStat( $peppers_picked , 'peppers_picked', $player['player_id'] );
+			self::setStat( $potatos_picked , 'potatos_picked', $player['player_id'] );
+			self::setStat( $tomatos_picked , 'tomatos_picked', $player['player_id'] );
+			
+			$table[1][] =$carrots_picked ;
+            $table[2][] =$cabbages_picked;
+			$table[3][] =$peas_picked    ;
+			$table[4][] =$peppers_picked ;
+            $table[5][] =$potatos_picked ;
+			$table[6][] =$tomatos_picked ;
+			
+			$score = $carrots_picked * $carrots_value + $cabbages_picked * $cabbage_value + $peas_picked * $peas_value + $peppers_picked * $peppers_value + $potatos_picked * $potato_value + $tomatos_picked * $tomato_value ;
+			
+			$table[7][] = $score ;
+			
+			$sql = "UPDATE player SET player_score = ".$score." WHERE player_id=".$player['player_id'];
+            self::DbQuery( $sql );    
+        }
+		
+        $this->notifyAllPlayers( "notif_finalScore", '', array(
+            "id" => 'finalScoring',
+            "title" => $this->resources["score_window_title"],
+            "table" => $table,            
+			"closing" => clienttranslate( "OK" )
+           
+        ) ); 
+    }
+
+////////////////////////////////////////////////////////////////////////////
+
+    function stGameEndScoring()
+    {
+        //stats for each player, we want to reveal how many gems they have in tent
+        //In the case of a tie, check amounts of artifacts. Set auxillery score for this
+
+        //stats first
+
+        $this->displayScores();
+		  
+        $this->gamestate->nextState();
     }
 
     
