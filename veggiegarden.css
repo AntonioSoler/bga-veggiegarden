@@ -60,14 +60,6 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
   pointer-events: visible;
-<<<<<<< HEAD
-=======
-  /* display: inline-flex; */
-  margin: 1px;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: flex-start;
->>>>>>> origin/master
 }
 
 @media screen and (min-width: 1920px){
@@ -131,11 +123,6 @@
     background-size: cover;
     display: block;
     margin: 15px;
-<<<<<<< HEAD
-=======
-    /* flex: 0 1 auto; */
-    
->>>>>>> origin/master
     margin-bottom: 30px;
     position: relative;
     transform:translateZ(33px);
@@ -210,15 +197,10 @@
 }
 
 #table{
-<<<<<<< HEAD
 	top: 2px;
 	left: 185px;
 	min-width: 590px;
 	min-height: 100px;
-=======
-	min-width: 610px;
-	min-height: 110px;
->>>>>>> origin/master
 	/* flex: 1 1 auto; */
 	border-radius: 10px;
 	/* display: block; */
@@ -227,7 +209,6 @@
 }
 
 
-<<<<<<< HEAD
 #table .card:nth-child(1) {
     
     transform: translate(0px,5px)
@@ -252,16 +233,6 @@
 #hand .card:nth-child(1) {
     
     transform: translate(0px,0px)
-=======
-#table .card {
-	margin:5px;
-	position:relative !important;
-}
-
-#hand .card {
-	margin:5px;
-	position:relative !important;
->>>>>>> origin/master
 }
 
 #hand .card:nth-child(2) {
@@ -297,14 +268,9 @@
 }
 
 #hand{
-<<<<<<< HEAD
 	top: 710px;
 	width: 890px;
 	min-height: 93px;
-=======
-	width: 790px;
-	min-height: 210px;
->>>>>>> origin/master
 	transform: rotatex(-12deg) translateZ(12px);
 	flex: 1 1 auto;
 	border-radius: 5px;
@@ -367,7 +333,6 @@
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.58);
     background-position: -180px;
     background-repeat:no-repeat;
-<<<<<<< HEAD
     position: absolute;
     display:block;
     top: -4px;
@@ -376,10 +341,6 @@
     /* transition: transform 0.5s; */
     -moz-transition: transform 0.5s;
     -o-transition: transform 0.5s;
-=======
-    margin-top: -4px;
-    margin-left: -4px;
->>>>>>> origin/master
 }
 
 .groundhog {
@@ -411,11 +372,7 @@
     border-style: solid;
     position: absolute;
     border-width: 1px;
-<<<<<<< HEAD
     display: block;
-=======
-    display: inline-block;
->>>>>>> origin/master
 }
 
 .fence {
@@ -563,17 +520,10 @@
 .borderpulse {
     cursor: pointer;
     animation: pulse 2s ease infinite;
-<<<<<<< HEAD
 	-webkit-animation: pulse 2s ease infinite !important;
     -moz-animation: pulse 2s ease infinite !important;
     -o-animation: pulse 2s ease infinite !important;
     animation: pulse 2s ease infinite !important;
-=======
-	-webkit-animation: pulse 2s ease infinite;
-    -moz-animation: pulse 2s ease infinite;
-    -o-animation: pulse 2s ease infinite;
-    animation: pulse 2s ease infinite;
->>>>>>> origin/master
     z-index: 200 !important;
 }
 
@@ -627,26 +577,15 @@
 
 
 
-<<<<<<< HEAD
 .redborder {
-=======
-.tileselected {
->>>>>>> origin/master
 border: 2px red solid !important;
 }
 
 .traveller {
-<<<<<<< HEAD
     -webkit-animation: travelanim 1.6s ease 1;
     -moz-animation: travelanim 1.6s ease 1;
     -o-animation: travelanim 1.6s ease 1;
     animation: travelanim 1.6s ease 1
-=======
-    -webkit-animation: travelanim 1.5s ease 1;
-    -moz-animation: travelanim 1.5s ease 1;
-    -o-animation: travelanim 1.5s ease 1;
-    animation: travelanim 1.5s ease 1
->>>>>>> origin/master
 }
 
 @keyframes "travelanim" {

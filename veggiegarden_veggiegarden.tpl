@@ -31,11 +31,7 @@
 -->
 <div id="playareascaler">
 	<div id="playArea">
-<<<<<<< HEAD
 		
-=======
-		<div id="table_wrap">
->>>>>>> origin/master
 
 
 			<div id="deck">

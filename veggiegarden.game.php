@@ -328,7 +328,6 @@ class veggiegarden extends Table
 		
 		switch ($targettype){
 			case "card_":
-<<<<<<< HEAD
 				$card_id = substr( $target, 5, 2 ) ; //  card_id
 				self::setGameStateValue( 'card_target', $card_id );
 				self::setGameStateValue( 'token_target', 0 );
@@ -366,29 +365,10 @@ class veggiegarden extends Table
 			break;
 		}
 		
-=======
-				$card_id = $targettype=substr( $target, 5, 2 ) ; //  card_id
-				self::setGameStateValue( 'card_target', $card_id );
-				self::setGameStateValue( 'token_target', 0 );
-				break;
-			case "token":
-				$card_id = $targettype=substr( $target, 6, 2 ) ; //  token_id
-				self::setGameStateValue( 'card_target', 0 );
-				self::setGameStateValue( 'token_target', $card_id );
-			break;
-		}
-		
-		self::notifyAllPlayers( "selecttarget", clienttranslate( '${player_name} selects a target for the card action' ), array(
-							'player_id' => $player_id,
-							'player_name' => self::getActivePlayerName(),
-							'target' => $target 						
-							) );	
->>>>>>> origin/master
 			
 	$this->gamestate->nextState( 'selectDestination' );
     }
 	
-<<<<<<< HEAD
 	function selectDestination( $destination)
     {
 		self::checkAction( 'selectDestination' );
@@ -681,16 +661,6 @@ class veggiegarden extends Table
 		
 	$this->gamestate->nextState( 'endTurn' );
 	
-=======
-	function selectDestination( $target)
-    {
-		self::checkAction( 'selectDestination' );
-		$player_id = self::getActivePlayerId();
-		$targettype=substr( $target, 0, 5 ) ; //  card_ field fence
-		
-			
-	//$this->gamestate->nextState( 'selectDestination' );
->>>>>>> origin/master
     }
 	
 	
@@ -726,19 +696,11 @@ class veggiegarden extends Table
         switch ($card['type'])
 		{
 		case "1":   // CARROTS Move BUNNY
-<<<<<<< HEAD
 		    $sql = "select card_location_arg pos from tokens where card_type<>0";
 			$notbunnypos=self::getCollectionFromDb( $sql );
 			foreach( $notbunnypos as $thispos )
 			{
 				array_push($result["possibledestinations"],"fence".$thispos['pos']);
-=======
-		    $sql = "select card_location_arg from tokens where card_type<>0";
-			$notbunnypos=self::getObjectListFromDB( $sql );
-			foreach( $notbunnypos as $thispos => $notbunnypos )
-			{
-				array_push($result["possibledestinations"],"fence".$notbunnypos[$thispos]);
->>>>>>> origin/master
 			}
 		break;
 		case "2":    //CABBAGE  Shift any column or row of cards or fence  (groundhog blocks row and column)
@@ -797,7 +759,6 @@ class veggiegarden extends Table
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
 				
-<<<<<<< HEAD
 				for ($y=-1 ; $y<=1 ; $y+=1) 
 				{	
 					for ($x=-1 ; $x<=1 ; $x+=1) 
@@ -807,21 +768,6 @@ class veggiegarden extends Table
 							array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget+$y));
 						}	
 					}
-=======
-			  	for ($x=-1 ; $x<=1 ; $x+=2) 
-				{	
-					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget))) 
-					{
-						array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget));
-					}	
-				}		
-				for ($y=-1 ; $y<=1 ; $y+=2) 
-				{	
-					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND ( $groundhog_pos != (($Xtarget)*10+$Ytarget+$y))) 
-					{
-						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
-					}	
->>>>>>> origin/master
 				}
 		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
 			if ($cardtarget >= 1 )
@@ -830,7 +776,6 @@ class veggiegarden extends Table
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
 				
-<<<<<<< HEAD
 			  	for ($y=-1 ; $y<=1 ; $y+=1) 
 				{	
 					for ($x=-1 ; $x<=1 ; $x+=1) 
@@ -841,22 +786,6 @@ class veggiegarden extends Table
 						}	
 					}
 				}
-=======
-			  	for ($x=-1 ; $x<=1 ; $x+=2) 
-				{	
-					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ($groundhog_pos != (($Xtarget+$x)*10+$Ytarget)) ) 
-					{
-						array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget));
-					}	
-				}		
-				for ($y=-1 ; $y<=1 ; $y+=2) 
-				{	
-					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND ($groundhog_pos != (($Xtarget)*10+$Ytarget+$y))) 
-					{
-						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
-					}	
-				}		
->>>>>>> origin/master
 			}
 			if ($tokentarget >= 1 )	
 			{
@@ -901,17 +830,10 @@ class veggiegarden extends Table
 		break;
 		case "6":     //TOMATO Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)
 					$sql = "select card_id from cards where card_location='table' and card_id<>".$card['id'];
-<<<<<<< HEAD
 					$cardsintable=self::getCollectionFromDb( $sql );
 					foreach( $cardsintable as $thiscard )
 					{
 						array_push($result["possibledestinations"],"card_".$thiscard['card_id']);
-=======
-					$cardsintable=self::getObjectListFromDB( $sql );
-					foreach( $cardsintable as $thiscard => $cardsintable )
-					{
-						array_push($result["possibledestinations"],"card_".$cardsintable[$thiscard]);
->>>>>>> origin/master
 					}
 		break;
 		}
@@ -1050,7 +972,6 @@ class veggiegarden extends Table
         self::setGameStateValue( 'card_picked', 0 );	
 		self::setGameStateValue( 'card_target', 0 );	
 		self::setGameStateValue( 'token_target', 0 );
-<<<<<<< HEAD
 		
 		self::incStat( 1, $name, 'turns_number', self::getActivePlayerId() );
 		
@@ -1066,8 +987,6 @@ class veggiegarden extends Table
 			
 			
 		}
-=======
->>>>>>> origin/master
         
 		$this->gamestate->nextState( 'playerpick' );
     }

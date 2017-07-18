@@ -118,11 +118,7 @@ function (dojo, declare) {
         onEnteringState: function( stateName, args )
         {
             console.log( 'Entering state: '+stateName );
-<<<<<<< HEAD
            
-=======
-            debugger;
->>>>>>> origin/master
             switch( stateName )
             {
             case 'startTurn':
@@ -304,11 +300,7 @@ function (dojo, declare) {
          * new parent immediately, so parent is correct during animation
          */
         slideToObjectRelative : function(token, finalPlace, tlen, tdelay, onEnd) {
-<<<<<<< HEAD
             this.MyresetPosition(token);
-=======
-            this.resetPosition(token);
->>>>>>> origin/master
             dojo.removeClass( token , "traveller");
             dojo.addClass( token , "traveller");
 			
@@ -403,13 +395,10 @@ function (dojo, declare) {
 			var top = dojo.style(_a37, "top");
 			left = left + tgt.x - src.x + (tgt.w - src.w) / 2;
 			top = top + tgt.y - src.y + (tgt.h - src.h) / 2;
-<<<<<<< HEAD
 			
 			dojo.removeClass( _a37 , "traveller");
             dojo.addClass( _a37 , "traveller");
 			
-=======
->>>>>>> origin/master
 			return dojo.fx.slideTo(
 			{
 				node: _a37,
@@ -429,28 +418,16 @@ function (dojo, declare) {
 						dojo.style(obj, "top", "0px");
 						this.placeOnObject(obj, from);
 						var anim = this.MySlideToObject(obj, to, _a49, _a4a);
-<<<<<<< HEAD
 						var destroynode = function (node)
 						{
 							dojo.destroy(node);
 						};
 						dojo.connect(anim, "onEnd", destroynode);
-=======
-						var _a4b = function (node)
-						{
-							dojo.destroy(node);
-						};
-						dojo.connect(anim, "onEnd", _a4b);
->>>>>>> origin/master
 						anim.play();
 						return anim;
 					},
 		
-<<<<<<< HEAD
 		MystripPosition : function(token) {
-=======
-		stripPosition : function(token) {
->>>>>>> origin/master
             // console.log(token + " STRIPPING");
             // remove any added positioning style
             dojo.style(token, "display", null);
@@ -468,7 +445,6 @@ function (dojo, declare) {
             dojo.style(token, "left", "0px");
             dojo.style(token, "position", null);
         },
-		////////////////////////////////////////////////
 		
 		slideToObjectAndDestroyAndIncCounter: function( mobile_obj , to, duration, delay ) 
 		{
@@ -655,37 +631,7 @@ function (dojo, declare) {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
 
-<<<<<<< HEAD
 			dojo.forEach(this.gameconnections, dojo.disconnect);
-			dojo.query(".borderpulse").removeClass("borderpulse");
-		
-            if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
-            {            
-                this.ajaxcall( "/veggiegarden/veggiegarden/selectTarget.html", {
-                    target:target
-                }, this, function( result ) {} );
-            }            
-        },    
-		
-		selectDestination: function( evt )
-        {
-            // Stop this event propagation
-=======
-			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
->>>>>>> origin/master
-			
-            dojo.stopEvent( evt );
-			if( ! this.checkAction( 'selectDestination' ) )
-            {   return; }
-
-            // Get the cliqued pos and Player field ID
-            var target =  evt.target || evt.srcElement;
-			target=target.id;
-			
-<<<<<<< HEAD
-=======
-			dojo.forEach(this.gameconnections, dojo.disconnect);
-			
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		
             if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
@@ -708,17 +654,10 @@ function (dojo, declare) {
             var target =  evt.target || evt.srcElement;
 			target=target.id;
 			
->>>>>>> origin/master
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
 
-<<<<<<< HEAD
-=======
-			dojo.toggleClass(target,"tileselected");  //TODO replace this with a notification
-			
-			
->>>>>>> origin/master
 			dojo.forEach(this.gameconnections, dojo.disconnect);
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		

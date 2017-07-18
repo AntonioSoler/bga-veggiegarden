@@ -82,13 +82,8 @@
 	public function selectDestination()
     {
 		self::setAjaxMode();
-<<<<<<< HEAD
 		$destination = self::getArg( "target", AT_alphanum, true );
 		$this->game->selectDestination($destination);
-=======
-		$target = self::getArg( "target", AT_alphanum, true );
-		$this->game->selectDestination($target);
->>>>>>> origin/master
 		self::ajaxResponse();    
 	}
 

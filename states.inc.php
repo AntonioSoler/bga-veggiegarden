@@ -102,11 +102,7 @@ $machinestates = array(
 		"action" => "stDestination",
 		"args" => "argPossibleDestinations",
 		"possibleactions" => array( "selectDestination" ),
-<<<<<<< HEAD
         "transitions" => array( "endTurn" => 6 ) 
-=======
-        "transitions" => array( "startTurn" => 2 ) 
->>>>>>> origin/master
     ),
 		
 	6 => array(
