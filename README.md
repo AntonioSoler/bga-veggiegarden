@@ -9,4 +9,4 @@ http://www.quicksimplefun.com/product/veggie-garden/
 
 All images and names copyrights belong to them.
 
-Thanks to: Patric Havert at Quick Simple Fun Games for assigning me this project.
+Thanks to: Patrick Havert at Quick Simple Fun Games for assigning me this project and Kelly North Adams the game designer for the help betatesting it.
