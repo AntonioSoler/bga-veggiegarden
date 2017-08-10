@@ -1,10 +1,4 @@
-<html>
-  <head>
-    <meta name="generator"
-    content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
-    <title></title>
-  </head>
-  <body>{OVERALL_GAME_HEADER} 
+{OVERALL_GAME_HEADER} 
   <!-- 
 ========
 == BGA framework: (c) Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -33,8 +27,8 @@
 	<div id="playArea">
 		
 
-
-			<div id="deck">
+            <div id="deck"></div>
+			<div id="fakedeck">
 				<div class="card_back"></div>
 				<div class="card_back"></div>
 				<div class="card_back"></div>
@@ -48,9 +42,8 @@
 				<div class="card_back"></div>
 			</div>
 
-			<div id="table" class="whiteblock table"></div>
-		
-		
+			<div id="table" class="whiteblock table"> <span id="harvesttext" class="whiteblock">{harvest}</span> </div>
+			<br>		
 			<div id="boardPanel" class="boarddiv">
 				<div id="field0" class="field"></div>
 				<div id="field1" class="field"></div>
@@ -84,7 +77,7 @@
 			</div>
 		
 		
-		<div id="hand" class="whiteblock table"></div>
+		<div id="hand" class="whiteblock table"><span id="yourhandtext" class="whiteblock">{hand}</span></div>
 		
 	</div>
 </div>
@@ -102,5 +95,4 @@ id=&amp;quot;my_game_item_${id}&amp;quot;&amp;gt;&amp;lt;\/div&amp;gt;&amp;#39;;
 var jstpl_player_board = '<br>\<div class="cp_board"></b>\<div id="cards_p${id}" class="cardcounter_board"> <div class="cardcounter"></div> <span id="cardcount_p${id}">0</span>\</div>';
 
 
-</script> {OVERALL_GAME_FOOTER}</body>
-</html>
+</script> {OVERALL_GAME_FOOTER}

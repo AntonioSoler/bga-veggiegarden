@@ -76,7 +76,8 @@
         
         */
 
-
+    $this->tpl['hand'] = self::_("Your hand: ");
+	$this->tpl['harvest'] = self::_("Harvest: ");
 
         /*********** Do not change anything below this line  ************/
   	}

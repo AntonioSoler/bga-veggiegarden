@@ -22,7 +22,7 @@ require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
 class veggiegarden extends Table
 {
-	function veggiegarden( )
+	function __construct( )
 	{
         	
  
@@ -32,7 +32,9 @@ class veggiegarden extends Table
         //  If your game has options (variants), you also have to associate here a label to
         //  the corresponding ID in gameoptions.inc.php.
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
-        parent::__construct();self::initGameStateLabels( array( 
+        parent::__construct();
+		
+		self::initGameStateLabels( array( 
                 "iterations" => 10,
 				"max_iterations" =>11,
                 "card_picked" => 12,
@@ -68,6 +70,7 @@ class veggiegarden extends Table
     */
     protected function setupNewGame( $players, $options = array() )
     {    
+ try {
         // Set the colors of the players with HTML color code
         // The default below is red/green/blue/orange/brown
         // The number of colors defined here must correspond to the maximum number of players allowed for the gams
@@ -95,20 +98,20 @@ class veggiegarden extends Table
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
         self::initStat( 'table', 'turns_number' , 0 );    // Init a table statistics
-	/*	self::initStat( 'table', 'carrots_value', 0 );
+		self::initStat( 'table', 'carrots_value', 0 );
 		self::initStat( 'table', 'cabbage_value', 0 );
 		self::initStat( 'table', 'peas_value'   , 0 );
 		self::initStat( 'table', 'peppers_value', 0 );
 		self::initStat( 'table', 'potato_value' , 0 );
-		self::initStat( 'table', 'tomato_value' , 0 ); */
+		self::initStat( 'table', 'tomato_value' , 0 ); 
 		
         self::initStat( 'player', 'turns_number'   , 0 );  // Init a player statistics (for all players)
-	/*	self::initStat( 'player', 'carrots_picked' , 0 );
+		self::initStat( 'player', 'carrots_picked' , 0 );
 		self::initStat( 'player', 'cabbages_picked', 0 );
 		self::initStat( 'player', 'peas_picked'    , 0 );
 		self::initStat( 'player', 'peppers_picked' , 0 );
 		self::initStat( 'player', 'potatos_picked' , 0 );
-		self::initStat( 'player', 'tomatos_picked' , 0 ); */
+		self::initStat( 'player', 'tomatos_picked' , 0 ); 
 		
         // TODO: setup the initial game situation here
 		
@@ -166,7 +169,7 @@ class veggiegarden extends Table
 				$this->tokens->pickCardsForLocation( 1, 'deck' , 'fence', 30+$x , true );
 		}
 	   
-	    for ($x=1 ; $x<=4 ; $x++)
+	    for ($x=1 ; $x<=3 ; $x++)
 		{
 			$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table', $x );
 		}
@@ -191,6 +194,10 @@ class veggiegarden extends Table
 		foreach( $players as $player_id => $player )
         {
             $this->cards->pickCardsForLocation( 2, 'deck' , 'hand', $player_id ); 
+        }
+} catch ( Exception $e ) {
+            $this->dump('err', $e);
+            $this->error("Error during game initialization: $e");
         }
 		
 		// Activate first player (which is in general a good idea :) )
@@ -248,9 +255,10 @@ class veggiegarden extends Table
     
 	function getGameProgression()
     {
-        // TODO: compute and return the game progression
+        $players = self::loadPlayersBasicInfos();
+		$cardcount=$this->cards->countCardInLocation( 'hand' );
 		
-		$result = ( self::getGameStateValue('iterations') * 100 ) / ( self::getGameStateValue('max_iterations') + 4 );
+		$result = ( $cardcount * 100 ) / ( sizeof($players)*9 );
 
         return $result ;
     }
@@ -303,21 +311,38 @@ class veggiegarden extends Table
 	
 	function pickcard( $card_id)
     {
-	self::checkAction( 'pickcard' );
-	$player_id = self::getActivePlayerId();
-	$thiscard= $this->cards->getCard( $card_id );
-	self::setGameStateValue( 'card_picked', $card_id );
-	
-	//$this->cards->moveCard( $card_id,'hand',$player_id );
-	$thiscardtype=$thiscard['type'];
-	self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a ${thiscard_name} card' ), array(
+		self::checkAction( 'pickcard' );
+		$player_id = self::getActivePlayerId();
+		$thiscard= $this->cards->getCard( $card_id );
+		self::setGameStateValue( 'card_picked', $card_id );
+		
+		
+		$thiscardtype=$thiscard['type'];
+		self::notifyAllPlayers( "selectitem", "" , array(
+							'player_id' => $player_id,
+							'player_name' => self::getActivePlayerName(),
+							'item' => 'card_'.$card_id ,  
+							'thiscard_name' =>  $this->card_types[$thiscardtype]['name']
+							) );	
+		$cardcount=$this->cards->countCardInLocation ('hand', $player_id);
+		
+		if ($cardcount>=8)
+		{
+			self::DbQuery( "UPDATE cards SET card_location_arg=".$player_id.", card_location='hand' WHERE card_id=".$card_id );
+			
+								
+			self::notifyAllPlayers( "cardtohand", clienttranslate( '${player_name} this is your last card so the effect is not applied' ), array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
-						'item' => 'card_'.$card_id ,  
-						'thiscard_name' =>  $this->card_types[$thiscardtype]['name']
-						) );	
-			
-	$this->gamestate->nextState( 'selectTarget' );
+						'card_id' => $card_id
+						) );
+			$this->gamestate->nextState( 'endTurn' );
+		}
+		
+		else 
+		{
+			$this->gamestate->nextState( 'selectTarget' );	
+		}
     }
 	
 	function selectTarget( $target)
@@ -331,7 +356,7 @@ class veggiegarden extends Table
 				$card_id = substr( $target, 5, 2 ) ; //  card_id
 				self::setGameStateValue( 'card_target', $card_id );
 				self::setGameStateValue( 'token_target', 0 );
-				self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a card to apply the effect' ), array(
+				self::notifyAllPlayers( "selectitem","" , array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
 						'item' => 'card_'.$card_id   
@@ -357,7 +382,7 @@ class veggiegarden extends Table
 				$card_id = substr( $target, 6, 2 ) ; //  token_id
 				self::setGameStateValue( 'card_target', 0 );
 				self::setGameStateValue( 'token_target', $card_id );
-				self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} picks a fence token to apply the effect' ), array(
+				self::notifyAllPlayers( "selectitem", "" , array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
 						'item' => 'token_'.$card_id 
@@ -365,16 +390,25 @@ class veggiegarden extends Table
 			break;
 		}
 		
+		
 			
 	$this->gamestate->nextState( 'selectDestination' );
     }
+	
+	function cancel( )
+    {
+		self::checkAction( 'cancel' );
+		$player_id = self::getActivePlayerId();
+		$this->gamestate->nextState( 'playerpick' );
+	}
+	
 	
 	function selectDestination( $destination)
     {
 		self::checkAction( 'selectDestination' );
 		$player_id = self::getActivePlayerId();
 		$targettype=substr( $destination, 0, 5 ) ; //  card_ field fence		
-		self::notifyAllPlayers( "selectitem", clienttranslate( '${player_name} selects a destination for the card effect' ), array(
+		self::notifyAllPlayers( "selectitem", "" , array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
 						'item' => $destination 						
@@ -433,15 +467,19 @@ class veggiegarden extends Table
 					switch($delta)
 					{
 						case "1":
+						case "-3":
 						    $shiftcards= array ($X*10+0,$X*10+1,$X*10+2,$X*10+3  );
 							break;
 						case "-1":
+						case "3":
 					        $shiftcards= array ($X*10+3,$X*10+2,$X*10+1,$X*10+0  );
 							break;
 						case "10":
+						case "-30":
 					        $shiftcards= array (0+$Y,10+$Y,20+$Y,30+$Y  );
 							break;
 						case "-10":
+						case "30":
 					        $shiftcards= array (30+$Y,20+$Y,10+$Y,0+$Y  );
 							break;	
 					}
@@ -653,7 +691,7 @@ class veggiegarden extends Table
 	self::DbQuery( "UPDATE cards SET card_location_arg=".$player_id.", card_location='hand' WHERE card_id=".$cardpicked );
 			
 								
-	self::notifyAllPlayers( "cardtohand", clienttranslate( '${player_name} picks the selected card' ), array(
+	self::notifyAllPlayers( "cardtohand", clienttranslate( '${player_name} picks the selected card from the harvest' ), array(
 						'player_id' => $player_id,
 						'player_name' => self::getActivePlayerName(),
 						'card_id' => $cardpicked
@@ -691,7 +729,7 @@ class veggiegarden extends Table
 		$card=$this->cards->getCard( $cardpicked );
 		
 		$result=  array( 'possibledestinations' => array() );
-		
+		$result['cardpicked']=  $card['type'] ;
 		
         switch ($card['type'])
 		{
@@ -710,7 +748,7 @@ class veggiegarden extends Table
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
 				
-			  	for ($x=-1 ; $x<=1 ; $x+=2) 
+			  	/*for ($x=-1 ; $x<=1 ; $x+=2) 
 				{	
 					if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 					{
@@ -722,8 +760,20 @@ class veggiegarden extends Table
 					if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 )   ) 
 					{
 						array_push($result["possibledestinations"],"field".(($Xtarget)*10+$Ytarget+$y));
-					}	
+					}		
+				}*/
+				for ($x=-1 ; $x<=1 ; $x+=2) 
+				{	
+					
+						array_push($result["possibledestinations"],"field".((($Xtarget+$x+4)%4 )*10+$Ytarget));
+					
 				}		
+				for ($y=-1 ; $y<=1 ; $y+=2) 
+				{	
+					
+						array_push($result["possibledestinations"],"field".(($Xtarget)*10+($Ytarget+$y+4)%4 ));
+					
+				}
 			}
 			if ($tokentarget >= 1 )
 				
@@ -755,63 +805,76 @@ class veggiegarden extends Table
 			}
 			break;
 		case "3":    //PEAS    move the groundhog to other compost, select one card and it shifts position over the groundhog
-			$target=$this->cards->getCard( $cardtarget );
-				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
-				$Ytarget = $target['location_arg'] % 10 ;	
-				
-				for ($y=-1 ; $y<=1 ; $y+=1) 
-				{	
-					for ($x=-1 ; $x<=1 ; $x+=1) 
-					{	
-						if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget+$y))) 
-						{
-							array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget+$y));
-						}	
-					}
+			
+				for ($x=1 ; $x<= 2; $x++)
+				{
+					for ($y=1 ; $y<= 2 ;$y++)
+					{
+						if ( $groundhog_pos != ($x*10 + $y ))
+						{ 
+							array_push($result["possibledestinations"],"field".($x*10+$y));
+						}
+					}	
 				}
+			break;
+			
 		case "4":     //PEPPERS  Swaps two cards (the groundhog blocks one card)
 			if ($cardtarget >= 1 )
 			{
 				$target=$this->cards->getCard( $cardtarget );
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
-				
-			  	for ($y=-1 ; $y<=1 ; $y+=1) 
+				$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+			  	for ($x=-1 ; $x<=1 ; $x+=1) 
 				{	
-					for ($x=-1 ; $x<=1 ; $x+=1) 
+					for ($y=-1 ; $y<=1 ; $y+=1) 
 					{	
-						if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos != (($Xtarget+$x)*10+$Ytarget+$y))) 
+						if ( (($Ytarget +$y) >= 0 ) AND ( ( $Ytarget + $y ) < 4 ) AND (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )  AND ( $groundhog_pos <> (($Xtarget+$x)*10+$Ytarget+$y) ) AND ( $target['location_arg'] != (($Xtarget+$x)*10+$Ytarget+$y)))  
 						{
 							array_push($result["possibledestinations"],"field".(($Xtarget+$x)*10+$Ytarget+$y));
-						}	
-					}
-				}
+						}		
+					}	
+				}		
+				
 			}
 			if ($tokentarget >= 1 )	
 			{
 				$target=$this->tokens->getCard( $tokentarget );
 				$Xtarget = ( $target['location_arg'] - $target['location_arg'] % 10) / 10; ;
 				$Ytarget = $target['location_arg'] % 10 ;	
-				
+				$sql = "select card_location_arg from tokens where card_type=0";
+				$bunnypos=self::getUniqueValueFromDB( $sql );
 				if ( $Ytarget == 0 OR $Ytarget == 3)
 				{
 					for ($x=-1 ; $x<=1 ; $x+=2) 
 					{	
 						if ( (($Xtarget +$x) >= 0 ) AND ( ( $Xtarget + $x ) < 4 )   ) 
 						{
-							array_push($result["possibledestinations"],"fence".(($Xtarget+$x)*10+$Ytarget));
-						}	
+							if ($bunnypos<>(($Xtarget+$x)*10+$Ytarget)) 
+							{
+								array_push($result["possibledestinations"],"fence".(($Xtarget+$x)*10+$Ytarget));
+							}	
+						}
 					}		
 				}
 				if ( $Ytarget == 1 OR $Ytarget == 2)
 				{
-					for ($y=-1 ; $y<=1 ; $y+=2) 
+					/* for ($y=-1 ; $y<=1 ; $y+=2) 
 					{	
 						if ( (($Ytarget +$y) >= 1 ) AND ( ( $Ytarget + $y ) < 3 )   ) 
 						{
 							array_push($result["possibledestinations"],"fence".(($Xtarget)*10+$Ytarget+$y));
 						}	
-					}		
+					}*/		
+					if ($bunnypos<>(($Xtarget)*10+$Ytarget+1)) 
+					{
+						array_push($result["possibledestinations"],"fence".(($Xtarget)*10+$Ytarget+1));
+					}
+					if ($bunnypos<>(($Xtarget)*10+$Ytarget-1)) 
+					{
+						array_push($result["possibledestinations"],"fence".(($Xtarget)*10+$Ytarget-1));
+					}
+					
 				}
 			}
 			break;
@@ -852,6 +915,7 @@ class veggiegarden extends Table
 		$Xgroundhog_pos=  ($groundhog_pos - $groundhog_pos % 10) / 10; 
 		$card=$this->cards->getCard( $cardpicked );
 		$result=  array( 'possiblemoves' => array() );
+		$result['cardpicked']=  $card['type'] ;
         switch ($card['type'])
 		{
 		case "1":   // CARROTS Move BUNNY
@@ -905,16 +969,13 @@ class veggiegarden extends Table
 						}
 					}	
 				}
-			for ($x=0 ; $x<=3 ; $x++) 
-				{
-					array_push($result["possiblemoves"],"fence".($x*10 ) );
-					array_push($result["possiblemoves"],"fence".($x*10+3) );
-				}
-				for ($y=1 ; $y<=2 ; $y++) 
-				{
-					array_push($result["possiblemoves"],"fence".($y)  );
-					array_push($result["possiblemoves"],"fence".(30+$y) );
-				}
+			
+			$sql = "select card_location_arg pos from tokens where card_type<>0";
+			$notbunnypos=self::getCollectionFromDb( $sql );
+			foreach( $notbunnypos as $thispos )
+			{
+				array_push($result["possiblemoves"],"fence".$thispos['pos']);
+			}
 			
 			break;
 		break;
@@ -969,23 +1030,30 @@ class veggiegarden extends Table
 	
     function ststartTurn()
     {
-        self::setGameStateValue( 'card_picked', 0 );	
-		self::setGameStateValue( 'card_target', 0 );	
-		self::setGameStateValue( 'token_target', 0 );
+        
+		$players = self::loadPlayersBasicInfos();
+		$player_id = self::getActivePlayerId();
+		self::giveExtraTime($player_id);
+		$cardcount=$this->cards->countCardInLocation( 'hand' );
 		
-		self::incStat( 1, $name, 'turns_number', self::getActivePlayerId() );
-		
-		for ($x=1 ; $this->cards->countCardInLocation( 'table' ) < 4 ; $x++)
-		{
-			$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table' );
-			self::notifyAllPlayers( "drawcard", clienttranslate( '${player_name} draws a new card for the harvest' ), array(
-						'player_id' => $player_id,
-						'player_name' => self::getActivePlayerName(),
-						'card_id' => $PlayedCard['id'],
-						'card_type' => $PlayedCard['type']
-						) );
-			
-			
+		if (  $cardcount <= ( sizeof($players) * 8) )  //do all the players have 8 cards?
+		{	
+			for ($x=1 ; $this->cards->countCardInLocation( 'table' ) < 4 ; $x++)
+			{
+				$PlayedCard = $this->cards->pickCardForLocation( 'deck', 'table' );
+				self::notifyAllPlayers( "drawcard", clienttranslate( 'A new card is drawn for the harvest' ), array(
+							'card_id' => $PlayedCard['id'],
+							'card_type' => $PlayedCard['type']
+							) );
+				$maxcount=self::getUniqueValueFromDB ("SELECT MAX(counted) as maxcount FROM( SELECT COUNT(*) AS counted FROM cards WHERE card_location = 'table' GROUP BY card_type) as counts");
+				if ($maxcount==4)
+				{
+					
+					self::DbQuery( "UPDATE cards SET card_location_arg=0 , card_location='removed' WHERE card_location='table'" );
+								
+			        self::notifyAllPlayers( "discardall", clienttranslate( 'All the cards in the harvest are discarded ( 4 of a kind in the harvest)' ), array(	) );
+				}		
+			}
 		}
         
 		$this->gamestate->nextState( 'playerpick' );
@@ -993,18 +1061,38 @@ class veggiegarden extends Table
 
 	function stplayerpick()
     {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
+		$players = self::loadPlayersBasicInfos();
+		self::setGameStateValue( 'card_picked', 0 );	
+		self::setGameStateValue( 'card_target', 0 );	
+		self::setGameStateValue( 'token_target', 0 );
+
+		$cardcount=$this->cards->countCardInLocation( 'hand' );
+		if (  $cardcount >= ( sizeof($players) * 9) )
+		{
+			$this->gamestate->nextState( 'gameEndScoring' );
+		}	
+		
+
     }
 	
 	function stTarget()
     {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        // $this->gamestate->nextState( 'some_gamestate_transition' );
+        $player_id = self::getActivePlayerId();
+        $cardpicked=self::getGameStateValue( 'card_picked');
+		$card=$this->cards->getCard( $cardpicked );
+		if ($card['type'] == 1)
+		{
+			$sql = "select card_id from tokens where card_type=0";
+			$bunnyid=self::getUniqueValueFromDB( $sql );
+			self::setGameStateValue( 'card_target', 0 );
+			self::setGameStateValue( 'token_target', $bunnyid );
+			self::notifyAllPlayers( "selectitem", "" , array(
+					'player_id' => $player_id,
+					'player_name' => self::getActivePlayerName(),
+					'item' => 'token_'.$bunnyid
+					) );
+			$this->gamestate->nextState( 'selectDestination' );
+		}
     }
 	
 	function stDestination()
@@ -1017,79 +1105,95 @@ class veggiegarden extends Table
 	
 	function stendTurn()
     {
-            $cardpicked=self::getGameStateValue( 'card_picked');
-			
-			
-			
-		$this->activeNextPlayer();
+        $this->activeNextPlayer();
         $this->gamestate->nextState( );
     }
 
 	function displayScores()
     {
         $players = self::loadPlayersBasicInfos();
+		$veggie_values = array();
+		$veggie_values[1]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=1 and cards.card_location="field"');
+		$veggie_values[2]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=2 and cards.card_location="field"');
+		$veggie_values[3]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=3 and cards.card_location="field"');
+		$veggie_values[4]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=4 and cards.card_location="field"');
+		$veggie_values[5]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=5 and cards.card_location="field"');
+		$veggie_values[6]=self::getUniqueValueFromDB('SELECT COALESCE(sum(tokens.card_type),0) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=6 and cards.card_location="field"');
 		
-		$carrots_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=1 and cards.card_location="field"');
-		$cabbage_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=2 and cards.card_location="field"');
-		$peas_value   =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=3 and cards.card_location="field"');
-		$peppers_value=self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=4 and cards.card_location="field"');
-		$potato_value =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=5 and cards.card_location="field"');
-		$tomato_value =self::getUniqueValueFromDB('SELECT sum(tokens.card_type) FROM tokens join cards on cards.card_location_arg=tokens.card_location_arg WHERE cards.card_type=6 and cards.card_location="field"');
-		
-		self::setStat( $carrots_value, 'carrots_value');
-		self::setStat( $cabbage_value, 'cabbage_value');
-		self::setStat( $peas_value   , 'peas_value'   );
-		self::setStat( $peppers_value, 'peppers_value');
-		self::setStat( $potato_value , 'potato_value' );
-		self::setStat( $tomato_value , 'tomato_value' );
+		self::setStat( $veggie_values[1], 'carrots_value');
+		self::setStat( $veggie_values[2], 'cabbage_value');
+		self::setStat( $veggie_values[3], 'peas_value'   );
+		self::setStat( $veggie_values[4], 'peppers_value');
+		self::setStat( $veggie_values[5], 'potato_value' );
+		self::setStat( $veggie_values[6], 'tomato_value' );
 		      
         $table[] = array();
         
         //left hand col
+		
         $table[0][] = array( 'str' => ' ', 'args' => array(), 'type' => 'header');
-        $table[1][] = "<div class='carrots icon' ></div>=".$carrots_value;
-        $table[2][] = "<div class='cabbage icon' ></div>=".$cabbage_value;
-        $table[3][] = "<div class='peas icon' ></div>="   .$peas_value   ;
-		$table[4][] = "<div class='peppers icon' ></div>=".$peppers_value;
-		$table[5][] = "<div class='potato icon' ></div>=" .$potato_value ;
-		$table[6][] = "<div class='tomato icon' ></div>=" .$tomato_value ;
-        $table[7][] = clienttranslate($this->resources["score_window_title"]);
+        $table[1][] = "<div class='carrots veggieicon'></div>=".$veggie_values[1];
+        $table[2][] = "<div class='cabbage veggieicon'></div>=".$veggie_values[2];
+        $table[3][] = "<div class='peas veggieicon'></div>="   .$veggie_values[3];
+		$table[4][] = "<div class='peppers veggieicon'></div>=".$veggie_values[4];
+		$table[5][] = "<div class='potato veggieicon'></div>=" .$veggie_values[5];
+		$table[6][] = "<div class='tomato veggieicon'></div>=" .$veggie_values[6];
+        $table[7][] = "<div class='poker veggieicon'>";
+		$table[8][] = clienttranslate($this->resources["score_window_title"]);
 		
         foreach( $players as $player_id => $player )
         {
-            $table[0][] = array( 'str' => '${player_name}',
+            $veggie_picked = array();
+			$table[0][] = array( 'str' => '${player_name}',
                                  'args' => array( 'player_name' => $player['player_name'] ),
                                  'type' => 'header'
                                );
             
-			$carrots_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=1) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
-		    $cabbages_picked=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=2) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
-		    $peas_picked    =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=3) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
-		    $peppers_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=4) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
-		    $potatos_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=5) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
-		    $tomatos_picked =self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=6) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+			$veggie_picked[1]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=1) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $veggie_picked[2]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=2) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $veggie_picked[3]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=3) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $veggie_picked[4]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=4) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $veggie_picked[5]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=5) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+		    $veggie_picked[6]=self::getUniqueValueFromDB('SELECT count(*) FROM cards WHERE (card_type=6) and ( card_location="hand") and (card_location_arg = '.$player['player_id'].') ');
+			$veggiepoker    =self::getUniqueValueFromDB('SELECT COUNT(DISTINCT card_type) FROM cards where card_location="hand" AND card_location_arg='.$player['player_id']);
 		
-			self::setStat( $carrots_picked , 'carrots_picked', $player['player_id'] );
-			self::setStat( $cabbages_picked, 'cabbages_picked',$player['player_id'] );
-			self::setStat( $peas_picked    , 'peas_picked',    $player['player_id'] );
-			self::setStat( $peppers_picked , 'peppers_picked', $player['player_id'] );
-			self::setStat( $potatos_picked , 'potatos_picked', $player['player_id'] );
-			self::setStat( $tomatos_picked , 'tomatos_picked', $player['player_id'] );
+			self::setStat( $veggie_picked[1], 'carrots_picked', $player['player_id'] );
+			self::setStat( $veggie_picked[2], 'cabbages_picked',$player['player_id'] );
+			self::setStat( $veggie_picked[3], 'peas_picked',    $player['player_id'] );
+			self::setStat( $veggie_picked[4], 'peppers_picked', $player['player_id'] );
+			self::setStat( $veggie_picked[5], 'potatos_picked', $player['player_id'] );
+			self::setStat( $veggie_picked[6], 'tomatos_picked', $player['player_id'] );
 			
-			$table[1][] =$carrots_picked ;
-            $table[2][] =$cabbages_picked;
-			$table[3][] =$peas_picked    ;
-			$table[4][] =$peppers_picked ;
-            $table[5][] =$potatos_picked ;
-			$table[6][] =$tomatos_picked ;
+			if ($veggiepoker>=5)
+			{
+				$table[7][] = 10;
+				$score=10;
+			}
+			else
+			{
+				$table[7][] = 0;
+				$score=0;
+			}	
 			
-			$score = $carrots_picked * $carrots_value + $cabbages_picked * $cabbage_value + $peas_picked * $peas_value + $peppers_picked * $peppers_value + $potatos_picked * $potato_value + $tomatos_picked * $tomato_value ;
+			for ($i=1 ; $i<=6 ; $i++ )
+			{
+				$table[$i][] =$veggie_values[$i].' x '.$veggie_picked[$i].' = '.$veggie_values[$i]*$veggie_picked[$i];
+				$score+= $veggie_values[$i] * $veggie_picked[$i] ;
+			}	
 			
-			$table[7][] = $score ;
+			$table[8][] = $score ;
 			
 			$sql = "UPDATE player SET player_score = ".$score." WHERE player_id=".$player['player_id'];
             self::DbQuery( $sql );    
         }
+		
+		for ($i=6 ; $i>0 ; $i-- )
+			{
+				if ( $veggie_values[$i] == 0 )
+				{ 
+					array_splice($table,$i,1);  //Remove the table rows of the values == 0				
+				}
+			}	
 		
         $this->notifyAllPlayers( "notif_finalScore", '', array(
             "id" => 'finalScoring',

@@ -69,7 +69,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "ststartTurn",
         "updateGameProgression" => true, 
-        "transitions" => array( "playerpick" => 3 , "gameEndScoring" => 90 ) ,
+        "transitions" => array( "playerpick" => 3  ) ,
 		
     ),
 	
@@ -80,18 +80,18 @@ $machinestates = array(
 		"descriptionmyturn" => clienttranslate('${you} have to pick a veggie from the harvest'),
 		"action" => "stplayerpick",	
 		"possibleactions" => array( "pickcard" ),        
-        "transitions" => array( "selectTarget" => 4 , "startTurn" => 2 , "selectDestination" => 5 ) 
+        "transitions" => array( "selectTarget" => 4 , "endTurn" => 6 , "selectDestination" => 5  , "gameEndScoring" => 90) 
     ),
 	
 	4 => array(
         "name" => "selectTarget",  
         "type" => "activeplayer",
-        "description" => clienttranslate('${actplayer} has to select a target card or token from the garden'),
-		"descriptionmyturn" => clienttranslate('${you} have to select a target card or token from the garden'),
+        "description" => clienttranslate('${actplayer} has to select a target for the card effect'),
+		"descriptionmyturn" => clienttranslate('${you} have to select a target for the card effect'),
 		"action" => "stTarget",
 		"args" => "argPossibleTargets",
-		"possibleactions" => array( "selectTarget" ),
-        "transitions" => array( "selectDestination" => 5 ) 
+		"possibleactions" => array( "selectTarget" , "pickcard" ),
+        "transitions" => array( "selectDestination" => 5 , "selectTarget" => 4 ) 
     ),
 	
 	5 => array(
@@ -101,8 +101,8 @@ $machinestates = array(
 		"descriptionmyturn" => clienttranslate('${you} have to select a destination for the card effect'),
 		"action" => "stDestination",
 		"args" => "argPossibleDestinations",
-		"possibleactions" => array( "selectDestination" ),
-        "transitions" => array( "endTurn" => 6 ) 
+		"possibleactions" => array( "selectDestination", "cancel" ),
+        "transitions" => array( "endTurn" => 6 , "playerpick" => 3) 
     ),
 		
 	6 => array(

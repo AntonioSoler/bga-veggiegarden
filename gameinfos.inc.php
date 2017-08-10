@@ -95,7 +95,7 @@ $gameinfos = array(
 
 // Game interface width range (pixels)
 // Note: game interface = space on the left side, without the column on the right
-'game_interface_width' => array(
+'game_interface_width' =>  850, /* array(
 
     // Minimum width
     //  default: 740
@@ -107,8 +107,8 @@ $gameinfos = array(
     //  default: null (ie: no limit, the game interface is as big as the player's screen allows it).
     //  maximum possible value: unlimited
     //  minimum possible value: 740
-    'max' => null
-),
+    'max' => 1440
+), */
 
 // Games categories
 //  You can attribute a maximum of FIVE "tags" for your game.

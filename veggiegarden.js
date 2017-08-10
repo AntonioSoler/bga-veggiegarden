@@ -26,18 +26,18 @@ function (dojo, declare) {
             console.log('veggiegarden constructor');
               
             if (!dojo.hasClass("ebd-body", "mode_3d")) {
-            dojo.addClass("ebd-body", "mode_3d");
-            dojo.addClass("ebd-body", "enableTransitions");
-				$("globalaction_3d").innerHTML = "2D";   // controls the upper right button 
+            //dojo.addClass("ebd-body", "mode_3d");
+            //dojo.addClass("ebd-body", "enableTransitions");
+				//$("globalaction_3d").innerHTML = "2D";   // controls the upper right button 
 				this.control3dxaxis = 30;  // rotation in degrees of x axis (it has a limit of 0 to 80 degrees in the frameword so users cannot turn it upsidedown)
 				this.control3dzaxis = 0;   // rotation in degrees of z axis
 				this.control3dxpos = -100;   // center of screen in pixels
 				this.control3dypos = 200;   // center of screen in pixels
 				this.control3dscale = 1;   // zoom level, 1 is default 2 is double normal size, 
-				this.control3dmode3d = true ;  			// is the 3d enabled	
+				this.control3dmode3d = false ;  			// is the 3d enabled	
 				 //transform: rotateX(30deg) translate(200px, -100px) rotateZ(0deg) scale3d(1, 1, 1); min-width: 0px;
 
-				$("game_play_area").style.transform = "rotatex(" + this.control3dxaxis + "deg) translate(" + this.control3dypos + "px," + this.control3dxpos + "px) rotateZ(" + this.control3dzaxis + "deg) scale3d(" + this.control3dscale + "," + this.control3dscale + "," + this.control3dscale + ")";
+				//$("game_play_area").style.transform = "rotatex(" + this.control3dxaxis + "deg) translate(" + this.control3dypos + "px," + this.control3dxpos + "px) rotateZ(" + this.control3dzaxis + "deg) scale3d(" + this.control3dscale + "," + this.control3dscale + "," + this.control3dscale + ")";
 			}
         },
         
@@ -100,6 +100,7 @@ function (dojo, declare) {
 			if (this.gamedatas.groundhog >0 )
 			{
 				dojo.place( "<div id='groundhog' class='groundhog' ></div>" , "field"+this.gamedatas.groundhog, "last");
+				this.addTooltipHtml("groundhog", _("The groundhog blocks the card under it, so the card cannot be selected or moved"));
 			}
  
             // Setup game notifications to handle (see "setupNotifications" method below)
@@ -125,9 +126,15 @@ function (dojo, declare) {
 			    
 				break
             case 'playerpick':
-			    
+			    dojo.forEach(this.gameconnections, dojo.disconnect);
+					dojo.query(".borderpulse").removeClass("borderpulse");
+					dojo.query(".redborder").removeClass("redborder");
+					this.gameconnections=new Array();
+					
 			    if (this.isCurrentPlayerActive() )
 				{
+					
+					
 					list =dojo.query( '#table .card' ).addClass( 'borderpulse' ) ;
 					
 					for (var i = 0; i < list.length; i++)
@@ -144,8 +151,30 @@ function (dojo, declare) {
 			    if (this.isCurrentPlayerActive() )
 				{
 					list = args.args.possiblemoves;
+					switch(args.args.cardpicked)
+					{
+						case '1':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select the bunny');
+						  break;
+						 case '2':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a column or row of cards or fence tokens');
+						  break; 
+						case '3':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a destination for the groundhog');
+						  break;
+						 case '4':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card or fence token to move');
+						  break; 
+						case '5':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card from your hand to place it on the garden');
+						  break;
+						 case '6':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card from the garden to discard it');
+						  break; 
+						
+					}
 					
-					
+                    this.updatePageTitle();
 					for (var i = 0; i < list.length; i++)
 					{
 						var thiselement = list[i];
@@ -153,16 +182,47 @@ function (dojo, declare) {
 						this.gameconnections.push( dojo.connect(thistarget[0], 'onclick' , this, 'selectTarget'))
 					}
 					
+					list =dojo.query( '#table .card' ).addClass( 'borderpulse' ) ;
+					
+					for (var i = 0; i < list.length; i++)
+					{
+						var thiselement = list[i];
+						this.gameconnections.push( dojo.connect(thiselement, 'onclick' , this, 'pickcard'))
+					}
+					
 				}
 				
 				break;
             case 'selectDestination':
+			
 			    
 			    if (this.isCurrentPlayerActive() )
 				{
 					list = args.args.possibledestinations;
+					switch(args.args.cardpicked)
+					{
+						case '1':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a destination for the bunny');
+						  break;
+						 case '2':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a destination for the shift effect');
+						  break; 
+						case '3':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card to swap it over the groundhog');
+						  break;
+						 case '4':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card or fence token to swap with the already selected one');
+						  break; 
+						case '5':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card from the garden to pick it');
+						  break;
+						 case '6':
+						  this.gamedatas.gamestate.descriptionmyturn = _('${you} have to select a card from the harvest to replace the discarded one');
+						  break; 
+						
+					}
 					
-					
+                    this.updatePageTitle();
 					for (var i = 0; i < list.length; i++)
 					{
 						var thiselement = list[i];
@@ -241,7 +301,11 @@ function (dojo, declare) {
             {            
                 switch( stateName )
                 {
+					 case 'selectDestination':
+					 this.addActionButton( 'button_cancel', _('Cancel'), 'cancel' );
+					 break;
 /*               
+
                  Example:
  
                  case 'myGameState':
@@ -267,6 +331,20 @@ function (dojo, declare) {
         
         */
 		attachToNewParentNoDestroy : function(mobile, new_parent) {
+            if (typeof mobile == "string") {
+                mobile = $(mobile);
+            }
+            if (typeof new_parent == "string") {
+                new_parent = $(new_parent);
+            }
+
+            dojo.style(mobile, "position", "absolute");
+            dojo.place(mobile, new_parent, "last");
+            
+            return box;
+        },
+		
+		calculateBox : function(mobile, new_parent) {
             if (mobile === null) {
                 console.error("attachToNewParent: mobile obj is null");
                 return;
@@ -287,11 +365,13 @@ function (dojo, declare) {
             dojo.place(mobile, new_parent, "last");
             var tgt = dojo.position(mobile);
             var box = dojo.marginBox(mobile);
-
+            var cbox = dojo.contentBox(mobile);
             var left = box.l + src.x - tgt.x;
             var top = box.t + src.y - tgt.y;
             dojo.style(mobile, "top", top + "px");
             dojo.style(mobile, "left", left + "px");
+            box.l += box.w-cbox.w;
+            box.t += box.h-cbox.h;
             return box;
         },
 
@@ -304,13 +384,12 @@ function (dojo, declare) {
             dojo.removeClass( token , "traveller");
             dojo.addClass( token , "traveller");
 			
-            var box = this.attachToNewParentNoDestroy(token, finalPlace);
+            var box = this.calculateBox(token, finalPlace);
 			var anim = this.MySlideToObjectPos(token, finalPlace, box.l, box.t, tlen, tdelay);
 			
-			
-
-            dojo.connect(anim, "onEnd", dojo.hitch(this, function(token) {
+            dojo.connect(anim, "onEnd", dojo.hitch(this, function(token,finalPlace) {
                 this.MystripPosition(token);
+				this.attachToNewParentNoDestroy(token,finalPlace);
                 if (onEnd) onEnd(token);
             }));
 
@@ -366,50 +445,54 @@ function (dojo, declare) {
 			);
 		},
 		
-		MySlideToObject: function (_a37, _a38, _a39, _a3a)
+		MySlideToObject: function (mobile, target, duration, delay)
 		{
-			if (_a37 === null)
+			if (mobile === null)
 			{
 				console.error("slideToObject: mobile obj is null");
 			}
-			if (_a38 === null)
+			if (target === null)
 			{
 				console.error("slideToObject: target obj is null");
 			}
-			var tgt = dojo.position(_a38);
-			var src = dojo.position(_a37);
-			if (typeof _a39 == "undefined")
+			var tgt = dojo.position(target);
+			var src = dojo.position(mobile);
+			if (typeof duration == "undefined")
 			{
-				_a39 = 500;
+				duration = 500;
 			}
-			if (typeof _a3a == "undefined")
+			if (typeof delay == "undefined")
 			{
-				_a3a = 0;
+				delay = 0;
 			}
 			if (this.instantaneousMode)
 			{
-				_a3a = Math.min(1, _a3a);
-				_a39 = Math.min(1, _a39);
+				delay = Math.min(1, delay);
+				duration = Math.min(1, duration);
 			}
-			var left = dojo.style(_a37, "left");
-			var top = dojo.style(_a37, "top");
+			var left = dojo.style(mobile, "left");
+			var top = dojo.style(mobile, "top");
+			
 			left = left + tgt.x - src.x + (tgt.w - src.w) / 2;
 			top = top + tgt.y - src.y + (tgt.h - src.h) / 2;
-			
-			dojo.removeClass( _a37 , "traveller");
-            dojo.addClass( _a37 , "traveller");
-			
-			return dojo.fx.slideTo(
+			travelanim= function(node){
+						
+						dojo.removeClass(node,"traveller");
+						dojo.addClass(node,"traveller");
+						}
+			slideanim = dojo.fx.slideTo(
 			{
-				node: _a37,
+				node: mobile,
 				top: top,
 				left: left,
-				delay: _a3a,
-				duration: _a39,
-				unit: "px"
-			}
-			);
+				delay: delay,
+				duration: duration,
+				unit: "px" 
+			});
+			dojo.connect(slideanim, "onPlay", dojo.hitch(this, travelanim, mobile )) ;
+			return slideanim;
 		},
+		
 		MySlideTemporaryObject: function (_a47, _a48, from, to, _a49, _a4a)
 					{
 						var obj = dojo.place(_a47, _a48);
@@ -544,8 +627,48 @@ function (dojo, declare) {
 				 tooltiptext=_("Discard a veggie from the garden and replace it with one from the harvest (the groundhog blocks)");
 				break;
 				}
+			switch(card_type){
+				case "1" :
+				 tooltiptitle=_("carrots");
+				break;        
+				case "2":    
+				 tooltiptitle=_("cabbage");
+				break;         
+				case "3":       
+				 tooltiptitle=_("peas"    );
+				break;          
+				case "4":      
+				 tooltiptitle=_("peppers" );
+				break;          
+				case "5":        
+				 tooltiptitle=_("potato" );
+				break;          
+				case "6":        
+				 tooltiptitle=_("tomato" );
+				break;
+				}
+			switch(card_type){
+				case "1" :
+				 tooltipclass="carrots";
+				break;        
+				case "2" :    
+				 tooltipclass="cabbage";
+				break;        
+				case "3" :    
+				 tooltipclass="peas"   ;
+				break;        
+				case "4" :    
+				 tooltipclass="peppers";
+				break;        
+				case "5" :     
+				 tooltipclass="potato" ;
+				break;        
+				case "6" :     
+				 tooltipclass="tomato" ;
+				break;
+				}
 			
-			this.addTooltipHtml("card_"+card_id, "<div id='tooltipcard_"+card_id+"' class='tooltipcard' style='background-position:"+position+";'><span class='tooltiptext'>"+tooltiptext+"</span></div>" );			
+			this.addTooltipHtml("card_"+card_id, "<div id='tooltipcard_"+card_id+"' class='tooltipcard "+tooltipclass+"' style='background-position:"+position+";'><span class='tooltiptitle'>"+tooltiptitle+"</span><span class='tooltiptext'>"+tooltiptext+"</span></div>" );			
 		},
 		
 		placetoken: function ( destination, card_id ,card_type )
@@ -559,6 +682,7 @@ function (dojo, declare) {
 			if ( card_type== 0)
 			{
 				dojo.place( "<div id='token_"+card_id+"' class='rabbit' ></div>" , destination, "last");
+				this.addTooltipHtml("token_"+card_id, _("The bunny makes the card next to it to score 0 points") );
 			}
 			else
 			{
@@ -581,7 +705,21 @@ function (dojo, declare) {
             _ make a call to the game server
         
         */
-        
+        cancel: function(  )
+        {
+            // Stop this event propagation
+			
+
+			if( ! this.checkAction( 'cancel' ) )
+            {   return; }
+
+            if( this.checkAction( 'cancel' ) )    // Check that this action is possible at this moment
+            {            
+                this.ajaxcall( "/veggiegarden/veggiegarden/cancel.html", {
+				
+                }, this, function( result ) {} );
+            }            
+        },    
 		
 		pickcard: function( evt )
         {
@@ -590,6 +728,8 @@ function (dojo, declare) {
             dojo.stopEvent( evt );
 			if( ! this.checkAction( 'pickcard' ) )
             {   return; }
+			dojo.query(".redborder").removeClass("redborder");
+			dojo.query(".borderpulse").removeClass("borderpulse");
 
             // Get the cliqued pos and Player field ID
             var cardpicked = evt.currentTarget.id;
@@ -598,14 +738,10 @@ function (dojo, declare) {
 		/*	this.confirmationDialog( _('Are you sure you want to make this?'), dojo.hitch( this, function() {
             this.ajaxcall( '/mygame/mygame/makeThis.html', { lock:true }, this, function( result ) {} );
 			} ) ); */
-			
-			
-			
-
-			
+		
 			dojo.forEach(this.gameconnections, dojo.disconnect);
 			
-			dojo.query(".borderpulse").removeClass("borderpulse");
+			this.gameconnections=new Array();
 		
             if( this.checkAction( 'pickcard' ) )    // Check that this action is possible at this moment
             {            
@@ -632,6 +768,7 @@ function (dojo, declare) {
 			} ) ); */
 
 			dojo.forEach(this.gameconnections, dojo.disconnect);
+			this.gameconnections=new Array();
 			dojo.query(".borderpulse").removeClass("borderpulse");
 		
             if( this.checkAction( 'selectTarget' ) )    // Check that this action is possible at this moment
@@ -707,6 +844,8 @@ function (dojo, declare) {
 			this.notifqueue.setSynchronous( 'cardfromhand', 2000 );
 			dojo.subscribe( 'discard', this, "notif_discard" );
 			this.notifqueue.setSynchronous( 'discard', 2000 );
+			dojo.subscribe( 'discardall', this, "notif_discardall" );
+			this.notifqueue.setSynchronous( 'discardall', 2000 );
 			dojo.subscribe( 'drawcard', this, "notif_drawcard" );
 			this.notifqueue.setSynchronous( 'drawcard', 2000 );
 			dojo.subscribe('notif_finalScore', this, "notif_finalScore");
@@ -729,10 +868,11 @@ function (dojo, declare) {
         {
             console.log( 'notif_cardtohand' );
             console.log( notif );
-            
-			if ( this.isCurrentPlayerActive() )
+            if ( this.isCurrentPlayerActive() )
 			{
 				this.slideToObjectRelative ("card_"+notif.args.card_id, 'hand',1500);
+				this.removeTooltip( "card_"+notif.args.card_id );
+				dojo.byId('cardcount_p'+notif.args.player_id).innerHTML=eval(dojo.byId('cardcount_p'+notif.args.player_id).innerHTML) + 1;
 			}
 			else
 			{
@@ -748,10 +888,12 @@ function (dojo, declare) {
 			if ( this.player_id == notif.args.player_id )
 			{
 				this.slideToObjectRelative ("card_"+notif.args.card_id, 'field'+notif.args.card_pos,1500);
+				dojo.byId('cardcount_p'+notif.args.player_id).innerHTML=eval(dojo.byId('cardcount_p'+notif.args.player_id).innerHTML) - 1;
 			}
 			else
 			{
 				this.placecard('field'+notif.args.card_pos ,notif.args.card_id, notif.args.card_type,'cardcount_p'+notif.args.player_id);
+				dojo.byId('cardcount_p'+notif.args.player_id).innerHTML=eval(dojo.byId('cardcount_p'+notif.args.player_id).innerHTML) - 1;
 			}	
         },
 		
@@ -765,21 +907,41 @@ function (dojo, declare) {
 			
         },
 		
+		notif_discardall: function( notif )
+        {
+            console.log( 'notif_discardall' );
+            console.log( notif );
+            
+			list =dojo.query( '#table .card' );
+					
+			for (var i = 0; i < list.length; i++)
+				{
+					var thiselement = list[i];
+					//this.gameconnections.push( dojo.connect(thiselement, 'onclick' , this, 'pickcard'))
+					
+					this.MyslideToObjectAndDestroy (thiselement['id'], 'deck' ,1500);
+				}
+			
+			
+			
+        },
+		
 		notif_drawcard: function( notif )
         {
             console.log( 'notif_drawcard' );
             console.log( notif );
-            
-			
 			this.placecard ("table", notif.args.card_id, notif.args.card_type , "deck");
-			
+			this.addtooltipcard ( notif.args.card_id, notif.args.card_type );
         },
 		
 		notif_selectitem: function( notif )
         {
-            
 			console.log( 'notif_selectitem' );
-            console.log( notif );
+			if (dojo.byId(notif.args.item).parentNode.id=="table")
+			{
+				dojo.query(".redborder").removeClass("redborder");
+			}
+            //console.log( notif );
             dojo.query("#"+notif.args.item).addClass("redborder");
         },
 		
