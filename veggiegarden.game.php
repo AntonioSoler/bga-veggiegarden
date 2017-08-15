@@ -399,6 +399,19 @@ class veggiegarden extends Table
     {
 		self::checkAction( 'cancel' );
 		$player_id = self::getActivePlayerId();
+		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+		if ( self::getGameStateValue( 'groundhog_pos') <> self::getGameStateValue( 'iterations')) 
+		{
+			self::setGameStateValue( 'groundhog_pos', self::getGameStateValue( 'iterations') );
+					
+					$moveitems=  array( 'groundhog' => 'field'.self::getGameStateValue( 'iterations') );
+					
+					self::notifyAllPlayers( "moveitems", clienttranslate( '${player_name} returns the groundhog to its original position' ), array(
+						'player_id' => $player_id,
+						'player_name' => self::getActivePlayerName(),
+						'moveitems' => $moveitems
+						) );
+		}
 		$this->gamestate->nextState( 'playerpick' );
 	}
 	
@@ -1034,6 +1047,8 @@ class veggiegarden extends Table
 		$players = self::loadPlayersBasicInfos();
 		$player_id = self::getActivePlayerId();
 		self::giveExtraTime($player_id);
+		$groundhog_pos=self::getGameStateValue( 'groundhog_pos');
+		self::setGameStateValue( 'iterations', $groundhog_pos );
 		$cardcount=$this->cards->countCardInLocation( 'hand' );
 		
 		if (  $cardcount <= ( sizeof($players) * 8) )  //do all the players have 8 cards?
